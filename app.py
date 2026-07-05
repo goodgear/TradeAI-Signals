@@ -1173,15 +1173,15 @@ def render_trade_page():
 # ==================== SUBSCRIBE PAGE ====================
 def render_subscribe_page():
     """Subscription plans and billing"""
-    st.markdown("<h1>💳 Subscription Plans</h1>", unsafe_allow_html=True)
+    st.markdown("<h1>SUBSCRIPTION PLANS</h1>", unsafe_allow_html=True)
     
     # Trial status
-    if st.session_state.subscription_type == 'trial':
-        status = user_auth.check_trial_status(st.session_state.user_id or "guest")
+    if st.session_state.user_id and st.session_state.subscription_type == 'trial':
+        status = user_auth.check_trial_status(st.session_state.user_id)
         if not status.get('active'):
-            st.warning("Your free trial has ended. Subscribe below to continue!")
+            st.warning("Your free trial has ended. Subscribe below to continue AI signals!")
     
-    st.markdown("### Choose Your Plan")
+    st.markdown("### CHOOSE YOUR PLAN")
     
     plans = subscription_manager.get_available_plans()
     
@@ -1189,22 +1189,25 @@ def render_subscribe_page():
     
     for i, plan in enumerate(plans):
         with cols[i]:
+            # Plan card
             st.markdown(f"""
-            <div style="background:#1A1F2E; padding:20px; border-radius:12px; height:400px; border:1px solid #2D3748;">
-                <h3>{plan['name']}</h3>
-                <h2 style="color:#00D4FF;">${plan['price']}</h2>
+            <div style="background:#1A1F2E; padding:20px; border-radius:12px; min-height:380px; border:1px solid rgba(0,212,255,0.3);">
+                <h3 style="color:#00D4FF; text-transform:uppercase; letter-spacing:1px;">{plan['name']}</h3>
+                <h2 style="color:#00D4FF; margin:10px 0;">${plan['price']}</h2>
                 <p style="color:#888;">/{plan['period']}</p>
-                <hr style="border-color:#2D3748;">
-                <ul style="list-style:none; padding:0;">
+                <hr style="border-color:#2D3748; margin:15px 0;">
+            </div>
             """, unsafe_allow_html=True)
             
+            # Features
             for feature in plan['features']:
-                st.write(f"✓ {feature}")
+                st.markdown(f"<div style='color:#E8E8E8; padding:4px 0;'>✓ {feature}</div>", unsafe_allow_html=True)
             
-            st.markdown("</ul></div>", unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
             
-            if st.button(f"Subscribe", key=f"sub_{plan['id']}", use_container_width=True):
-                st.info(f"You selected: {plan['name']} - ${plan['price']}/{plan['period']}")
+            if st.button(f"SUBSCRIBE", key=f"sub_{plan['id']}", use_container_width=True):
+                st.success(f"Selected: {plan['name']} - ${plan['price']}/{plan['period']}")
+                st.info("Stripe integration coming soon. Contact us to activate.")
                 
                 if plan['id'] == 'real_money':
                     st.warning("Real money trading requires additional identity verification and SEC compliance.")
@@ -1212,7 +1215,7 @@ def render_subscribe_page():
     st.divider()
     
     # Pricing breakdown
-    st.markdown("### 💰 Pricing Breakdown")
+    st.markdown("### PRICING BREAKDOWN")
     
     pricing_data = [
         {"Plan": "AI Signals (Weekly)", "Price": f"${PRICING['ai_signals_weekly']}/week"},
@@ -1222,13 +1225,17 @@ def render_subscribe_page():
         {"Plan": "Gains Fee (Real Money)", "Price": f"{PRICING['gains_percentage']}% bi-weekly"},
     ]
     
+    st.markdown("""
+    <div style="background:#1A1F2E; padding:20px; border-radius:12px; border:1px solid rgba(0,212,255,0.2);">
+    """, unsafe_allow_html=True)
     st.table(pd.DataFrame(pricing_data))
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 # ==================== ACCOUNT PAGE ====================
 def render_account_page():
     """User account settings"""
-    st.markdown("<h1>👤 Account</h1>", unsafe_allow_html=True)
+    st.markdown("<h1>ACCOUNT</h1>", unsafe_allow_html=True)
     
     if st.session_state.user_id:
         user = user_auth.get_user(st.session_state.user_id)
@@ -1236,25 +1243,42 @@ def render_account_page():
             col1, col2 = st.columns([1, 2])
             
             with col1:
-                st.markdown("### Profile")
-                st.write(f"**Name:** {user.name}")
-                st.write(f"**Email:** {user.email}")
-                st.write(f"**Member since:** {user.created_at[:10]}")
+                st.markdown("### PROFILE")
+                st.markdown(f"""
+                <div style="background:#1A1F2E; padding:20px; border-radius:12px; border:1px solid rgba(0,212,255,0.2);">
+                    <p style="color:#888; font-size:12px; margin:0;">NAME</p>
+                    <p style="color:#00D4FF; font-size:18px; margin:5px 0;">{user.name}</p>
+                    <p style="color:#888; font-size:12px; margin:10px 0 0;">EMAIL</p>
+                    <p style="color:#00D4FF; font-size:14px; margin:5px 0;">{user.email}</p>
+                    <p style="color:#888; font-size:12px; margin:10px 0 0;">MEMBER SINCE</p>
+                    <p style="color:#E8E8E8; font-size:14px; margin:5px 0;">{user.created_at[:10]}</p>
+                </div>
+                """, unsafe_allow_html=True)
             
             with col2:
-                st.markdown("### Subscription")
+                st.markdown("### SUBSCRIPTION")
                 
                 sub_type = user.subscription_type
                 if sub_type == 'trial':
                     status = user_auth.check_trial_status(st.session_state.user_id)
                     if status.get('active'):
-                        st.success(f"🎁 Free Trial - {status.get('days_remaining')} days remaining")
+                        st.markdown(f"""
+                        <div style="background:rgba(0,255,136,0.1); padding:20px; border-radius:12px; border:1px solid #00FF88;">
+                            <h4 style="color:#00FF88; margin:0;">FREE TRIAL ACTIVE</h4>
+                            <p style="color:#E8E8E8; margin:5px 0;">{status.get('days_remaining')} days remaining</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                     else:
-                        st.warning("Trial expired")
+                        st.markdown("""
+                        <div style="background:rgba(255,71,87,0.1); padding:20px; border-radius:12px; border:1px solid #FF4757;">
+                            <h4 style="color:#FF4757; margin:0;">TRIAL EXPIRED</h4>
+                            <p style="color:#E8E8E8; margin:5px 0;">Subscribe to continue using AI signals</p>
+                        </div>
+                        """, unsafe_allow_html=True)
                 else:
                     st.info(f"Current plan: {sub_type}")
                 
-                st.markdown("### 📊 Trading Stats")
+                st.markdown("### TRADING STATS")
                 portfolio = st.session_state.portfolio
                 
                 stats_data = [
@@ -1265,24 +1289,41 @@ def render_account_page():
                     {"Metric": "Total P/L", "Value": f"${portfolio.total_pnl:.2f}"},
                 ]
                 
+                st.markdown("""
+                <div style="background:#1A1F2E; padding:15px; border-radius:12px; border:1px solid rgba(0,212,255,0.2);">
+                """, unsafe_allow_html=True)
                 st.table(pd.DataFrame(stats_data))
+                st.markdown("</div>", unsafe_allow_html=True)
+        else:
+            st.info("Please log in to view your account details.")
+    else:
+        st.markdown("""
+        <div style="background:#1A1F2E; padding:30px; border-radius:12px; text-align:center; border:1px solid rgba(0,212,255,0.2);">
+            <h3 style="color:#00D4FF;">NOT LOGGED IN</h3>
+            <p style="color:#888;">Please log in or register to view your account</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Demo mode info
     st.divider()
-    st.markdown("### ℹ️ Demo Mode")
-    st.info("""
-    You're using TradeAI Pro in demo mode with fake money.
-    
-    **Features available:**
-    - Real-time market data
-    - AI trading signals
-    - Technical analysis
-    - Portfolio tracking
-    
-    **To unlock real trading:**
-    - Subscribe to AI Signals for ${}/week
-    - Or upgrade to Real Money mode for ${} (includes SEC-compliant setup)
-    """.format(PRICING['ai_signals_weekly'], PRICING['real_money_onboarding']))
+    st.markdown("### DEMO MODE INFO")
+    st.markdown("""
+    <div style="background:#1A1F2E; padding:20px; border-radius:12px; border:1px solid rgba(0,212,255,0.2);">
+        <p style="color:#888;">You're using TradeAI Pro in demo mode with fake money.</p>
+        <p style="color:#00D4FF; margin-top:15px;"><b>FEATURES AVAILABLE:</b></p>
+        <ul style="color:#E8E8E8;">
+            <li>Real-time market data</li>
+            <li>AI trading signals</li>
+            <li>Technical analysis</li>
+            <li>Portfolio tracking</li>
+        </ul>
+        <p style="color:#00D4FF; margin-top:15px;"><b>TO UNLOCK REAL TRADING:</b></p>
+        <ul style="color:#E8E8E8;">
+            <li>Subscribe to AI Signals for ${}/week</li>
+            <li>Or upgrade to Real Money mode for ${} (includes SEC-compliant setup)</li>
+        </ul>
+    </div>
+    """.format(PRICING['ai_signals_weekly'], PRICING['real_money_onboarding']), unsafe_allow_html=True)
 
 
 # ==================== MAIN ====================
@@ -1303,9 +1344,9 @@ def main():
         render_ai_signals_page()
     elif page == "Trade":
         render_trade_page()
-    elif page == "💳 Subscribe":
+    elif page == "Subscribe":
         render_subscribe_page()
-    elif page == "👤 Account":
+    elif page == "Account":
         render_account_page()
     
     # Auto-refresh for demo
