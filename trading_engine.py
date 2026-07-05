@@ -253,6 +253,59 @@ class TradingEngine:
 
         return opportunities
 
+    def get_top_gainers(self, tickers: list = None, period: str = "1d", top_n: int = 5) -> list:
+        """
+        Get top N gainers by percentage change
+        
+        Args:
+            tickers: List of tickers to scan
+            period: '1d' for daily, '5d' for weekly
+            top_n: Number of top gainers to return
+        """
+        if tickers is None:
+            tickers = DEFAULT_TICKERS
+        
+        gainers = []
+        for ticker in tickers:
+            quote = self.get_realtime_quote(ticker)
+            if quote:
+                gainers.append({
+                    "ticker": ticker,
+                    "price": quote['price'],
+                    "change_pct": quote['change_pct'],
+                    "volume": quote['volume']
+                })
+        
+        # Sort by change percentage (highest first)
+        gainers.sort(key=lambda x: x['change_pct'], reverse=True)
+        
+        return gainers[:top_n]
+
+    def get_top_weekly_gainers(self, tickers: list = None, top_n: int = 5) -> list:
+        """Get top weekly gainers"""
+        if tickers is None:
+            tickers = DEFAULT_TICKERS
+        
+        gainers = []
+        for ticker in tickers:
+            try:
+                df = self.get_stock_data(ticker, period="5d")
+                if df is not None and len(df) >= 2:
+                    weekly_change = ((df['Close'].iloc[-1] - df['Close'].iloc[0]) / df['Close'].iloc[0]) * 100
+                    quote = self.get_realtime_quote(ticker)
+                    if quote:
+                        gainers.append({
+                            "ticker": ticker,
+                            "price": quote['price'],
+                            "weekly_change_pct": weekly_change,
+                            "daily_change_pct": quote['change_pct']
+                        })
+            except:
+                continue
+        
+        gainers.sort(key=lambda x: x['weekly_change_pct'], reverse=True)
+        return gainers[:top_n]
+
 
 # Global instance
 trading_engine = TradingEngine()

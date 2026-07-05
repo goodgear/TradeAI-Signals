@@ -624,6 +624,37 @@ def render_dashboard():
     
     st.divider()
     
+    # Top Gainers Section
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("### 🔥 TOP DAILY GAINERS")
+        daily_gainers = trading_engine.get_top_gainers(DEFAULT_TICKERS, period="1d", top_n=5)
+        for g in daily_gainers:
+            st.markdown(f"""
+            <div style="background:#1A1F2E; padding:10px; border-radius:8px; margin:5px 0; 
+                        border-left:3px solid #00FF88; display:flex; justify-content:space-between;">
+                <span style="color:#00D4FF;"><b>{g['ticker']}</b></span>
+                <span style="color:#00FF88;">+{g['change_pct']:.2f}%</span>
+                <span style="color:#888;">${g['price']:.2f}</span>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("### 📈 TOP WEEKLY GAINERS")
+        weekly_gainers = trading_engine.get_top_weekly_gainers(DEFAULT_TICKERS, top_n=5)
+        for g in weekly_gainers:
+            st.markdown(f"""
+            <div style="background:#1A1F2E; padding:10px; border-radius:8px; margin:5px 0; 
+                        border-left:3px solid #FFD93D; display:flex; justify-content:space-between;">
+                <span style="color:#00D4FF;"><b>{g['ticker']}</b></span>
+                <span style="color:#FFD93D;">+{g['weekly_change_pct']:.2f}%</span>
+                <span style="color:#888;">${g['price']:.2f}</span>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.divider()
+    
     # AI Opportunities
     st.markdown("### 🤖 AI Top Opportunities")
     
