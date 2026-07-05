@@ -595,6 +595,22 @@ def render_dashboard():
     """Main dashboard with market overview"""
     st.markdown("<h1>📊 Market Dashboard</h1>", unsafe_allow_html=True)
     
+    # Welcome message for first-time users (just elevated)
+    if 'just_elevated' not in st.session_state:
+        st.session_state.just_elevated = True
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,212,255,0.1)); 
+                    padding: 20px; border-radius: 12px; text-align: center; 
+                    border: 1px solid rgba(0,255,136,0.3); margin: 20px 0;">
+            <h3 style="color: #00FF88; margin: 0;">YOU'RE IN! WELCOME ABOARD.</h3>
+            <p style="color: #E8E8E8; margin: 10px 0;">
+                You're already trading with <b style="color: #00D4FF;">$10,000 virtual cash</b>. 
+                Try searching a stock or check the AI Signals — feel the experience first, 
+                read the details later. The elevator is moving!
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
     # Market overview cards
     st.markdown("### 🌐 Market Overview")
     
@@ -1633,15 +1649,57 @@ def render_account_page():
 
 # ==================== MAIN ====================
 def main():
-    """Main application entry point"""
+    """Main application entry point - with elevator theory"""
+    
+    # Track when user first landed
+    if 'landing_start_time' not in st.session_state:
+        st.session_state.landing_start_time = time.time()
+        st.session_state.has_started = False
     
     # Show landing page first if user hasn't started yet
     if 'show_landing' not in st.session_state:
         st.session_state.show_landing = True
     
-    if st.session_state.show_landing:
+    # ELEVATOR THEORY: Auto-elevate to dashboard after 67 seconds
+    if st.session_state.show_landing and not st.session_state.has_started:
+        elapsed = time.time() - st.session_state.landing_start_time
+        if elapsed >= 67:  # 67 seconds = "elevator" to dashboard
+            st.session_state.show_landing = False
+            st.session_state.has_started = True
+            # Initialize anonymous user
+            if 'anonymous_start_date' not in st.session_state:
+                st.session_state.anonymous_start_date = datetime.now()
+                st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
+                st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
+    
+    if st.session_state.show_landing and not st.session_state.has_started:
+        # Show countdown timer at top
+        elapsed = time.time() - st.session_state.landing_start_time
+        remaining = max(0, 67 - int(elapsed))
+        
+        st.markdown(f"""
+        <div style="position: fixed; top: 0; left: 0; right: 0; 
+                    background: rgba(0,212,255,0.1); padding: 8px; text-align: center; 
+                    border-bottom: 1px solid rgba(0,212,255,0.3); z-index: 9999;">
+            <p style="color: #00D4FF; margin: 0; font-size: 13px;">
+                Auto-elevating to dashboard in <b>{remaining}s</b> 
+                · <a href="#" style="color: #00FF88;">Skip & Start Now</a>
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         render_landing_page()
         return
+    
+    # User has started - show dashboard with option to return to intro
+    if not st.session_state.user_id:
+        # Show "back to intro" option
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col1:
+            if st.button("← Back to Intro", use_container_width=True):
+                st.session_state.show_landing = True
+                st.session_state.landing_start_time = time.time() - 60  # Give less time if returning
+                st.rerun()
     
     # Check if anonymous trial has exceeded 3 days and user hasn't registered
     if 'anonymous_start_date' in st.session_state and not st.session_state.user_id:
