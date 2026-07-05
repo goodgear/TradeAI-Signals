@@ -22,7 +22,7 @@ from config import THEME, INITIAL_BALANCE, DEFAULT_TICKERS, PRICING
 
 # Page configuration
 st.set_page_config(
-    page_title="TradeAI Pro",
+    page_title="Trade With AI - Virtual Stock Trading",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -270,7 +270,7 @@ def render_sidebar():
         with col_logo:
             st.markdown(f'<div class="neon-icon">{ICONS["logo"]}</div>', unsafe_allow_html=True)
         with col_title:
-            st.markdown("## TRADEAI PRO")
+            st.markdown("## TRADE WITH AI")
         
         # User status
         if st.session_state.user_id:
@@ -315,13 +315,177 @@ def render_sidebar():
         return page
 
 
+# ==================== LANDING PAGE ====================
+def render_landing_page():
+    """Beautiful landing page - first impression"""
+    
+    # Hero section
+    st.markdown("""
+    <div style="text-align: center; padding: 40px 20px;">
+        <h1 style="font-size: 56px; margin-bottom: 10px;">TRADE WITH AI</h1>
+        <p style="color: #00D4FF; font-size: 20px; letter-spacing: 3px; margin-bottom: 30px;">
+            EXPERIENCE THE FUTURE OF INVESTING
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Hook
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,47,255,0.1)); 
+                    padding: 30px; border-radius: 16px; text-align: center; 
+                    border: 1px solid rgba(0,212,255,0.3); margin-bottom: 30px;">
+            <h2 style="color: #00D4FF; font-size: 24px; margin: 0 0 15px 0;">
+                START WITH $10,000 VIRTUAL CASH
+            </h2>
+            <p style="color: #E8E8E8; font-size: 16px; margin: 10px 0;">
+                No credit card. No risk. No experience needed.
+            </p>
+            <p style="color: #00FF88; font-size: 14px; margin: 10px 0;">
+                ✓ Try instantly · ✓ Real market data · ✓ AI-guided trades
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # CTA - Start trading button
+        if st.button("START TRADING NOW", use_container_width=True, type="primary"):
+            # Set anonymous guest mode for first 3 days
+            if 'anonymous_start_date' not in st.session_state:
+                st.session_state.anonymous_start_date = datetime.now()
+                st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
+                st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
+            st.session_state.show_landing = False
+            st.rerun()
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Main description
+    st.markdown("""
+    <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
+        <h3 style="text-align: center; color: #00D4FF;">WHY TRADE WITH AI?</h3>
+        <p style="color: #E8E8E8; font-size: 16px; line-height: 1.8; text-align: center;">
+            Whether you're taking your first steps into the market or you've been watching from the sidelines, 
+            <b style="color: #00D4FF;">Trade With AI</b> offers something rare: a place to learn, experiment, 
+            and gain genuine confidence using <b>virtual cash</b> in a real market environment — completely risk-free.
+        </p>
+        <p style="color: #E8E8E8; font-size: 16px; line-height: 1.8; text-align: center;">
+            Our advanced artificial intelligence analyzes markets in real-time, identifies opportunities, 
+            and guides your decisions. You stay in control while the heavy lifting happens in the background.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Features grid
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
+                    border: 1px solid rgba(0,212,255,0.2); height: 250px;">
+            <h4 style="color: #00D4FF;">🎓 LEARN BY DOING</h4>
+            <p style="color: #E8E8E8; font-size: 14px;">
+                Experience real market dynamics without risking a single dollar. 
+                Virtual cash lets you make mistakes, learn patterns, and build intuition.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
+                    border: 1px solid rgba(0,212,255,0.2); height: 250px;">
+            <h4 style="color: #00D4FF;">🤖 AI-POWERED INSIGHTS</h4>
+            <p style="color: #E8E8E8; font-size: 14px;">
+                Our ensemble of machine learning models — Random Forest, Gradient Boosting, 
+                and Logistic Regression — work together to surface high-probability opportunities.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
+                    border: 1px solid rgba(0,212,255,0.2); height: 250px;">
+            <h4 style="color: #00D4FF;">⚡ ZERO FRICTION</h4>
+            <p style="color: #E8E8E8; font-size: 14px;">
+                Start in seconds. No lengthy signups, no overwhelming charts, 
+                no financial jargon. Just clear signals and smart defaults.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # Tech section - smaller font, for the curious
+    with st.expander("🔬 For the curious — what's under the hood?"):
+        st.markdown("""
+        <div style="background: #1A1F2E; padding: 20px; border-radius: 12px; 
+                    border: 1px solid rgba(0,212,255,0.2); font-size: 13px; line-height: 1.7;">
+            <p style="color: #00D4FF;"><b>AI PREDICTION ENGINE</b></p>
+            <ul style="color: #E8E8E8;">
+                <li><b>Random Forest Classifier</b> — Pattern recognition across 17+ market features</li>
+                <li><b>Gradient Boosting</b> — Sequential learning from past market behavior</li>
+                <li><b>Logistic Regression</b> — Probability baseline for confidence calibration</li>
+                <li><b>Ensemble Voter</b> — Consensus mechanism that weighs all models</li>
+                <li><b>Technical Analysis Layer</b> — RSI, MACD, Bollinger Bands, Stochastic, OBV</li>
+            </ul>
+            
+            <p style="color: #00D4FF;"><b>DATA & EXECUTION</b></p>
+            <ul style="color: #E8E8E8;">
+                <li><b>Real-time market data</b> via Yahoo Finance API</li>
+                <li><b>Interactive charts</b> powered by Plotly</li>
+                <li><b>SEC-compliant onboarding</b> for real-money transition</li>
+                <li><b>Automated buying & selling</b> with smart stop-loss protection</li>
+            </ul>
+            
+            <p style="color: #00D4FF;"><b>BUILT FOR BEGINNERS</b></p>
+            <p style="color: #E8E8E8;">
+                You don't need to know anything about investing. The AI handles analysis, 
+                surfaces opportunities, and can execute trades on your behalf. 
+                You focus on learning; we handle the complexity.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Pricing reminder
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("""
+        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
+                    border: 1px solid rgba(255,217,61,0.3); text-align: center;">
+            <h4 style="color: #FFD93D;">YOUR FIRST 3 DAYS ARE FREE</h4>
+            <p style="color: #E8E8E8;">
+                On day 3, we'll invite you to register (just name + email) 
+                to unlock your remaining 2 days. After that, continue with 
+                AI Signals for <b style="color: #00FF88;">$9/week</b>, or upgrade to 
+                real-money mode for <b style="color: #00FF88;">$99</b> (discounted from $120 for early adopters).
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        if st.button("I'M READY — LET'S GO", use_container_width=True, type="primary"):
+            if 'anonymous_start_date' not in st.session_state:
+                st.session_state.anonymous_start_date = datetime.now()
+                st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
+                st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
+            st.session_state.show_landing = False
+            st.rerun()
+
+
 # ==================== LOGIN/REGISTER ====================
 def render_auth_page():
     """Render login/register page"""
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        st.markdown("<h1 style='text-align: center;'>Welcome to TradeAI Pro</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center;'>Welcome to Trade With AI</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: #888;'>AI-powered stock trading signals</p>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
@@ -354,7 +518,7 @@ def render_auth_page():
                 
                 st.markdown("### 🎁 Free Trial")
                 st.markdown(f"- {PRICING['free_trial_days']} days FREE access")
-                st.markdown("- $10,000 fake money to start")
+                st.markdown("- $10,000 virtual cash to start")
                 st.markdown("- Real-time market data")
                 st.markdown("- AI trading signals")
                 
@@ -378,6 +542,52 @@ def render_auth_page():
                             st.rerun()
                         else:
                             st.error(result['error'])
+
+
+# ==================== TRIAL ENDING PROMPT ====================
+def render_trial_ending_prompt():
+    """Show registration prompt after 3-day anonymous trial"""
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, rgba(255,217,61,0.1), rgba(0,212,255,0.1)); 
+                    padding: 40px; border-radius: 16px; text-align: center; 
+                    border: 1px solid rgba(255,217,61,0.3); margin: 40px 0;">
+            <h2 style="color: #FFD93D;">YOUR TRIAL EXPERIENCE CONTINUES</h2>
+            <p style="color: #E8E8E8; font-size: 16px;">
+                You've spent 3 days exploring Trade With AI. We hope it's been valuable.
+            </p>
+            <p style="color: #00D4FF; font-size: 18px; margin: 20px 0;">
+                Register now to unlock the remaining 2 days FREE, 
+                plus get an exclusive <b style="color: #00FF88;">$21 discount</b> 
+                on real-money onboarding.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        with st.form("quick_register"):
+            name = st.text_input("Your Name")
+            email = st.text_input("Email Address")
+            submitted = st.form_submit_button("CONTINUE MY TRIAL", use_container_width=True)
+            
+            if submitted:
+                if name and email:
+                    import secrets as sec
+                    random_password = sec.token_urlsafe(8)
+                    result = user_auth.register(name, email, random_password)
+                    if result['success']:
+                        st.session_state.user_id = result['user_id']
+                        st.session_state.user_name = name
+                        st.session_state.subscription_type = 'trial'
+                        portfolio_manager.portfolios[result['user_id']] = st.session_state.portfolio
+                        st.success(f"Welcome {name}! Trial extended.")
+                        time.sleep(2)
+                        st.rerun()
+                    else:
+                        st.error(result['error'])
+                else:
+                    st.error("Please fill in both fields")
 
 
 # ==================== DASHBOARD ====================
@@ -852,9 +1062,19 @@ def render_ai_signals_page():
 
 
 def run_auto_trade(owned_tickers, max_position_pct, stop_loss_pct):
-    """Execute auto-trading logic"""
+    """Execute smarter auto-trading with cooldowns to prevent rapid buy/sell"""
     portfolio = st.session_state.portfolio
     results = []
+    
+    # Track last trade times to prevent rapid trading
+    if 'last_trade_time' not in st.session_state:
+        st.session_state.last_trade_time = {}
+    
+    # Minimum hold time: 1 hour (prevents frantic trading)
+    MIN_HOLD_HOURS = 1
+    # Minimum confidence for trades
+    MIN_BUY_CONFIDENCE = 75  # Higher threshold
+    MIN_SELL_CONFIDENCE = 65
     
     for ticker in owned_tickers:
         df = trading_engine.get_stock_data(ticker, period="3mo")
@@ -871,36 +1091,69 @@ def run_auto_trade(owned_tickers, max_position_pct, stop_loss_pct):
         position = portfolio.get_position(ticker)
         current_price = quote['price']
         
-        # Check stop-loss
+        # Check minimum hold time
+        if position and hasattr(position, 'entry_date'):
+            try:
+                entry_time = datetime.fromisoformat(position.entry_date)
+                hours_held = (datetime.now() - entry_time).total_seconds() / 3600
+                if hours_held < MIN_HOLD_HOURS and signal_data['signal'] != 'STRONG_SELL':
+                    # Skip if held less than min time (unless strong sell signal)
+                    continue
+            except:
+                pass
+        
+        # STOP-LOSS check (highest priority)
         if position:
             loss_pct = ((current_price - position.entry_price) / position.entry_price) * 100
             if loss_pct <= -stop_loss_pct:
                 result = portfolio.execute_sell(ticker, position.shares, current_price)
-                results.append(f"🔴 STOP-LOSS triggered for {ticker} ({loss_pct:.1f}%)")
-                portfolio_manager.save_portfolio(st.session_state.user_id or "guest")
+                if result['success']:
+                    results.append(f"STOP-LOSS: {ticker} ({loss_pct:.1f}%)")
+                    st.session_state.last_trade_time[ticker] = datetime.now()
+                    portfolio_manager.save_portfolio(st.session_state.user_id or "guest")
                 continue
         
-        # Execute signal-based trades
-        if signal_data['signal'] == 'SELL' and signal_data['confidence'] >= 60 and position:
-            result = portfolio.execute_sell(ticker, position.shares, current_price)
-            results.append(f"🔴 SOLD {ticker} at ${current_price:.2f} - Confidence {signal_data['confidence']}%")
-            portfolio_manager.save_portfolio(st.session_state.user_id or "guest")
+        # SELL signals - require higher confidence AND minimum hold
+        if signal_data['signal'] == 'SELL' and signal_data['confidence'] >= MIN_SELL_CONFIDENCE and position:
+            # Only sell if profit OR loss exceeds 2% (avoid selling at tiny loss)
+            pnl_pct = ((current_price - position.entry_price) / position.entry_price) * 100
+            if pnl_pct > 1.0 or pnl_pct < -2.0:  # Either gain >1% or loss >2%
+                result = portfolio.execute_sell(ticker, position.shares, current_price)
+                if result['success']:
+                    pnl_emoji = "+" if pnl_pct > 0 else ""
+                    results.append(f"SOLD {ticker} @ ${current_price:.2f} ({pnl_emoji}{pnl_pct:.1f}%)")
+                    st.session_state.last_trade_time[ticker] = datetime.now()
+                    portfolio_manager.save_portfolio(st.session_state.user_id or "guest")
+                continue
         
-        elif signal_data['signal'] == 'BUY' and signal_data['confidence'] >= 70 and not position:
-            # Calculate position size
-            max_investment = portfolio.total_value * (max_position_pct / 100)
+        # BUY signals - require very high confidence and no recent buy on this ticker
+        if signal_data['signal'] == 'BUY' and signal_data['confidence'] >= MIN_BUY_CONFIDENCE and not position:
+            # Check cooldown - no buy in last 4 hours for same ticker
+            if ticker in st.session_state.last_trade_time:
+                time_since_last = (datetime.now() - st.session_state.last_trade_time[ticker]).total_seconds() / 3600
+                if time_since_last < 4:
+                    continue
+            
+            # Calculate position size based on confidence
+            # Higher confidence = larger position
+            confidence_multiplier = signal_data['confidence'] / 100
+            actual_max_pct = max_position_pct * confidence_multiplier
+            
+            max_investment = portfolio.total_value * (actual_max_pct / 100)
             shares = int(max_investment / current_price)
-            if shares > 0:
+            
+            if shares > 0 and portfolio.cash >= (shares * current_price * 1.01):
                 result = portfolio.execute_buy(ticker, shares, current_price)
                 if result['success']:
-                    results.append(f"🟢 BOUGHT {shares} shares of {ticker} at ${current_price:.2f}")
+                    results.append(f"BOUGHT {shares} {ticker} @ ${current_price:.2f} ({signal_data['confidence']}%)")
+                    st.session_state.last_trade_time[ticker] = datetime.now()
                     portfolio_manager.save_portfolio(st.session_state.user_id or "guest")
     
-    # Show results
+    # Show results - quiet if no trades
     if results:
-        st.success(" | ".join(results[:5]))
+        st.success(f"Auto-trade executed: {' | '.join(results[:3])}")
     else:
-        st.info("🔍 No trades executed. Watching market...")
+        st.info("Watching market... holding positions (no signals strong enough)")
 
 
 def render_ticker_signal_chart(ticker):
@@ -1350,6 +1603,22 @@ def render_account_page():
 # ==================== MAIN ====================
 def main():
     """Main application entry point"""
+    
+    # Show landing page first if user hasn't started yet
+    if 'show_landing' not in st.session_state:
+        st.session_state.show_landing = True
+    
+    if st.session_state.show_landing:
+        render_landing_page()
+        return
+    
+    # Check if anonymous trial has exceeded 3 days and user hasn't registered
+    if 'anonymous_start_date' in st.session_state and not st.session_state.user_id:
+        days_elapsed = (datetime.now() - st.session_state.anonymous_start_date).days
+        if days_elapsed >= 3:
+            # Show registration prompt
+            render_trial_ending_prompt()
+            return
     
     # Render sidebar and get current page
     page = render_sidebar()
