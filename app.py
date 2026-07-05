@@ -17,6 +17,7 @@ from trading_engine import trading_engine
 from prediction_model import predictor
 from portfolio_manager import portfolio_manager, Portfolio
 from user_auth import user_auth, subscription_manager
+from stripe_integration import stripe_manager, get_plan_details
 from config import THEME, INITIAL_BALANCE, DEFAULT_TICKERS, PRICING
 
 # Page configuration
@@ -1206,8 +1207,28 @@ def render_subscribe_page():
             st.markdown("<br>", unsafe_allow_html=True)
             
             if st.button(f"SUBSCRIBE", key=f"sub_{plan['id']}", use_container_width=True):
-                st.success(f"Selected: {plan['name']} - ${plan['price']}/{plan['period']}")
-                st.info("Stripe integration coming soon. Contact us to activate.")
+                if not stripe_manager.enabled:
+                    st.warning("Stripe payments not yet configured. Add your API keys to enable.")
+                    st.info("Set STRIPE_SECRET_KEY in Streamlit Cloud secrets to activate payments.")
+                    continue
+                
+                # Create Stripe checkout session
+                customer_email = st.session_state.user_email if hasattr(st.session_state, 'user_email') else None
+                
+                with st.spinner("Creating checkout session..."):
+                    result = stripe_manager.create_checkout_session(plan['id'], customer_email)
+                
+                if result['success']:
+                    st.success(f"Redirecting to Stripe Checkout...")
+                    st.markdown(f"**[Click here to pay ${plan['price']}]({result['url']})**")
+                    st.markdown(f"""
+                    <script>
+                        window.open('{result['url']}', '_blank');
+                    </script>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.error(f"Payment setup failed: {result.get('error')}")
+                    st.info("Try again or contact support.")
                 
                 if plan['id'] == 'real_money':
                     st.warning("Real money trading requires additional identity verification and SEC compliance.")
