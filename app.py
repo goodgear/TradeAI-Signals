@@ -18,7 +18,11 @@ from prediction_model import predictor
 from portfolio_manager import portfolio_manager, Portfolio
 from user_auth import user_auth, subscription_manager
 from stripe_integration import stripe_manager, get_plan_details
+from meta_tags import add_meta_tags
 from config import THEME, INITIAL_BALANCE, DEFAULT_TICKERS, PRICING
+
+# Add social media meta tags for link previews
+add_meta_tags()
 
 # Page configuration
 st.set_page_config(
