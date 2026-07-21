@@ -9,8 +9,8 @@ APP_NAME = "TradeAI Pro"
 APP_VERSION = "1.0.0"
 
 # Trading Settings
-INITIAL_BALANCE = 10_000  # Starting fake money
-FREE_TRIAL_DAYS = 3
+INITIAL_BALANCE = 100_000  # Starting virtual cash (institutional-scale)
+FREE_TRIAL_DAYS = 5  # Free trial period
 
 # Pricing
 PRICING = {
@@ -18,6 +18,7 @@ PRICING = {
     "ai_signals_monthly": 36,  # ~$9/week * 4
     "newsletter_monthly": 19,
     "real_money_onboarding": 120,
+    "real_money_onboarding_discounted": 99,  # For first-week registrants
     "gains_percentage": 10,  # 10% of gains bi-weekly
 }
 

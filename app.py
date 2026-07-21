@@ -302,7 +302,7 @@ def render_sidebar():
         page = st.radio(
             "Go to",
             ["Dashboard", "Search", "Portfolio", "AI Signals", 
-             "Trade", "Subscribe", "Account"],
+             "Trade", "Backtest", "Subscribe", "Account"],
             label_visibility="collapsed"
         )
         
@@ -321,166 +321,295 @@ def render_sidebar():
 
 # ==================== LANDING PAGE ====================
 def render_landing_page():
-    """Beautiful landing page - first impression"""
+    """Institutional-grade landing page with 67s elevator theory"""
     
-    # Hero section
+    # NAVIGATION BAR (top)
     st.markdown("""
-    <div style="text-align: center; padding: 40px 20px;">
-        <h1 style="font-size: 56px; margin-bottom: 10px;">TRADE WITH AI</h1>
-        <p style="color: #00D4FF; font-size: 20px; letter-spacing: 3px; margin-bottom: 30px;">
-            EXPERIENCE THE FUTURE OF INVESTING
-        </p>
+    <div style="background: rgba(10,14,23,0.95); padding: 15px 30px; 
+                border-bottom: 1px solid rgba(0,212,255,0.2); 
+                display: flex; justify-content: space-between; align-items: center;
+                margin: -1rem -1rem 2rem -1rem;">
+        <div style="color: #00D4FF; font-size: 18px; letter-spacing: 3px; font-weight: 300;">
+            ▣ TRADE WITH AI
+        </div>
+        <div style="color: #888; font-size: 12px; letter-spacing: 1px;">
+            INSTITUTIONAL · SEC-COMPLIANT · AI-NATIVE
+        </div>
     </div>
     """, unsafe_allow_html=True)
     
-    # Hook
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,47,255,0.1)); 
-                    padding: 30px; border-radius: 16px; text-align: center; 
-                    border: 1px solid rgba(0,212,255,0.3); margin-bottom: 30px;">
-            <h2 style="color: #00D4FF; font-size: 24px; margin: 0 0 15px 0;">
-                START WITH $10,000 VIRTUAL CASH
-            </h2>
-            <p style="color: #E8E8E8; font-size: 16px; margin: 10px 0;">
-                No credit card. No risk. No experience needed.
-            </p>
-            <p style="color: #00FF88; font-size: 14px; margin: 10px 0;">
-                ✓ Try instantly · ✓ Real market data · ✓ AI-guided trades
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # CTA - Start trading button
-        if st.button("START TRADING NOW", use_container_width=True, type="primary"):
-            # Set anonymous guest mode for first 3 days
-            if 'anonymous_start_date' not in st.session_state:
-                st.session_state.anonymous_start_date = datetime.now()
-                st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
-                st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
-            st.session_state.show_landing = False
-            st.rerun()
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Main description
+    # HERO SECTION - Sophisticated & Institutional
     st.markdown("""
-    <div style="max-width: 900px; margin: 0 auto; padding: 20px;">
-        <h3 style="text-align: center; color: #00D4FF;">WHY TRADE WITH AI?</h3>
-        <p style="color: #E8E8E8; font-size: 16px; line-height: 1.8; text-align: center;">
-            Whether you're taking your first steps into the market or you've been watching from the sidelines, 
-            <b style="color: #00D4FF;">Trade With AI</b> offers something rare: a place to learn, experiment, 
-            and gain genuine confidence using <b>virtual cash</b> in a real market environment — completely risk-free.
+    <div style="text-align: center; padding: 30px 20px 20px;">
+        <h1 style="font-size: 64px; margin-bottom: 5px; letter-spacing: 6px; font-weight: 300;">
+            TRADE WITH AI
+        </h1>
+        <div style="height: 1px; width: 200px; background: linear-gradient(90deg, transparent, #00D4FF, transparent); 
+                    margin: 20px auto;"></div>
+        <p style="color: #E8E8E8; font-size: 18px; letter-spacing: 2px; margin: 20px 0; font-weight: 300;">
+            INSTITUTIONAL-GRADE SIGNAL INFRASTRUCTURE
         </p>
-        <p style="color: #E8E8E8; font-size: 16px; line-height: 1.8; text-align: center;">
-            Our advanced artificial intelligence analyzes markets in real-time, identifies opportunities, 
-            and guides your decisions. You stay in control while the heavy lifting happens in the background.
+        <p style="color: #888; font-size: 13px; letter-spacing: 1px; margin: 10px 0;">
+            The same AI-driven methodology used by billion-dollar trading desks — now accessible to individual investors
         </p>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Features grid
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.markdown("""
-        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
-                    border: 1px solid rgba(0,212,255,0.2); height: 250px;">
-            <h4 style="color: #00D4FF;">🎓 LEARN BY DOING</h4>
-            <p style="color: #E8E8E8; font-size: 14px;">
-                Experience real market dynamics without risking a single dollar. 
-                Virtual cash lets you make mistakes, learn patterns, and build intuition.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-    
+    # THE OFFER - $100K Virtual Cash
+    col1, col2, col3 = st.columns([1, 3, 1])
     with col2:
         st.markdown("""
-        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
-                    border: 1px solid rgba(0,212,255,0.2); height: 250px;">
-            <h4 style="color: #00D4FF;">🤖 AI-POWERED INSIGHTS</h4>
-            <p style="color: #E8E8E8; font-size: 14px;">
-                Our ensemble of machine learning models — Random Forest, Gradient Boosting, 
-                and Logistic Regression — work together to surface high-probability opportunities.
+        <div style="background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(123,47,255,0.08)); 
+                    padding: 40px; border-radius: 12px; text-align: center; 
+                    border: 1px solid rgba(0,212,255,0.3); margin-bottom: 30px;">
+            <p style="color: #888; font-size: 11px; letter-spacing: 3px; margin: 0 0 15px 0;">
+                ▣ INSTANT ACCESS · NO COMMITMENT
+            </p>
+            <h2 style="color: #00D4FF; font-size: 36px; margin: 0 0 10px 0; font-weight: 300; letter-spacing: 2px;">
+                $100,000 VIRTUAL CASH
+            </h2>
+            <p style="color: #E8E8E8; font-size: 15px; margin: 15px 0; line-height: 1.6;">
+                Begin paper trading immediately. No credit card. No risk exposure. 
+                Real market data, real signals, real execution — zero capital at risk.
+            </p>
+            <p style="color: #00FF88; font-size: 12px; margin: 15px 0; letter-spacing: 1px;">
+                ▣ Real-time market data   ▣ AI ensemble predictions   ▣ Automated execution
             </p>
         </div>
         """, unsafe_allow_html=True)
     
-    with col3:
+    # THE 67-SECOND ELEVATOR (invisible)
+    # User is being auto-elevated - we don't show a countdown, just let it happen
+    if 'landing_start_time' not in st.session_state:
+        st.session_state.landing_start_time = time.time()
+    
+    elapsed = time.time() - st.session_state.landing_start_time
+    if elapsed >= 67 and not st.session_state.get('has_started', False):
+        st.session_state.show_landing = False
+        st.session_state.has_started = True
+        if 'anonymous_start_date' not in st.session_state:
+            st.session_state.anonymous_start_date = datetime.now()
+            st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
+            st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
+        st.rerun()
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # INSTITUTIONAL POSITIONING - "How billion-dollar entities do it"
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
         st.markdown("""
-        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
-                    border: 1px solid rgba(0,212,255,0.2); height: 250px;">
-            <h4 style="color: #00D4FF;">⚡ ZERO FRICTION</h4>
-            <p style="color: #E8E8E8; font-size: 14px;">
-                Start in seconds. No lengthy signups, no overwhelming charts, 
-                no financial jargon. Just clear signals and smart defaults.
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <p style="color: #E8E8E8; font-size: 16px; line-height: 1.9; font-weight: 300;">
+                The world's most sophisticated trading operations have spent decades building proprietary 
+                AI systems to identify market opportunities. These systems are the foundation of how 
+                institutional capital moves — methodically, systematically, and with extraordinary precision.
+            </p>
+            <p style="color: #E8E8E8; font-size: 16px; line-height: 1.9; font-weight: 300; margin-top: 20px;">
+                <b style="color: #00D4FF;">Trade With AI</b> brings that same institutional methodology 
+                to individual investors. Not a toy. Not a game. A legitimate, transparent, 
+                SEC-compliant platform built on proven quantitative principles.
             </p>
         </div>
         """, unsafe_allow_html=True)
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # Tech section - smaller font, for the curious
-    with st.expander("🔬 For the curious — what's under the hood?"):
+    # CAPABILITIES - The Three Pillars
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 30px;">
+        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ THE PLATFORM</p>
+        <h3 style="color: #00D4FF; font-size: 28px; font-weight: 300; letter-spacing: 3px;">
+            THREE PILLARS OF SIGNAL INTELLIGENCE
+        </h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
         st.markdown("""
-        <div style="background: #1A1F2E; padding: 20px; border-radius: 12px; 
-                    border: 1px solid rgba(0,212,255,0.2); font-size: 13px; line-height: 1.7;">
-            <p style="color: #00D4FF;"><b>AI PREDICTION ENGINE</b></p>
-            <ul style="color: #E8E8E8;">
-                <li><b>Random Forest Classifier</b> — Pattern recognition across 17+ market features</li>
-                <li><b>Gradient Boosting</b> — Sequential learning from past market behavior</li>
-                <li><b>Logistic Regression</b> — Probability baseline for confidence calibration</li>
-                <li><b>Ensemble Voter</b> — Consensus mechanism that weighs all models</li>
-                <li><b>Technical Analysis Layer</b> — RSI, MACD, Bollinger Bands, Stochastic, OBV</li>
-            </ul>
-            
-            <p style="color: #00D4FF;"><b>DATA & EXECUTION</b></p>
-            <ul style="color: #E8E8E8;">
-                <li><b>Real-time market data</b> via Yahoo Finance API</li>
-                <li><b>Interactive charts</b> powered by Plotly</li>
-                <li><b>SEC-compliant onboarding</b> for real-money transition</li>
-                <li><b>Automated buying & selling</b> with smart stop-loss protection</li>
-            </ul>
-            
-            <p style="color: #00D4FF;"><b>BUILT FOR BEGINNERS</b></p>
-            <p style="color: #E8E8E8;">
-                You don't need to know anything about investing. The AI handles analysis, 
-                surfaces opportunities, and can execute trades on your behalf. 
-                You focus on learning; we handle the complexity.
+        <div style="background: #0D1117; padding: 30px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.15); height: 280px;
+                    border-top: 2px solid #00D4FF;">
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0 0 10px 0;">
+                PILLAR I
+            </p>
+            <h4 style="color: #E8E8E8; font-size: 18px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
+                ENSEMBLE INTELLIGENCE
+            </h4>
+            <p style="color: #888; font-size: 13px; line-height: 1.7; margin-top: 15px;">
+                Multiple AI models working in concert: Random Forest, Gradient Boosting, 
+                and Logistic Regression. Each model contributes its strength; together they 
+                surface only high-confidence opportunities.
             </p>
         </div>
         """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: #0D1117; padding: 30px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.15); height: 280px;
+                    border-top: 2px solid #00D4FF;">
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0 0 10px 0;">
+                PILLAR II
+            </p>
+            <h4 style="color: #E8E8E8; font-size: 18px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
+                TECHNICAL PRECISION
+            </h4>
+            <p style="color: #888; font-size: 13px; line-height: 1.7; margin-top: 15px;">
+                RSI, MACD, Bollinger Bands, Stochastic, OBV — the same technical indicators 
+                that professional traders rely on, calculated in real-time on live market data 
+                from Yahoo Finance.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="background: #0D1117; padding: 30px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.15); height: 280px;
+                    border-top: 2px solid #00D4FF;">
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0 0 10px 0;">
+                PILLAR III
+            </p>
+            <h4 style="color: #E8E8E8; font-size: 18px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
+                AUTOMATED EXECUTION
+            </h4>
+            <p style="color: #888; font-size: 13px; line-height: 1.7; margin-top: 15px;">
+                Smart position sizing, cooldown logic, and stop-loss protection ensure trades 
+                are executed with the discipline of an institutional desk. You set the parameters; 
+                the system operates within them.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # THE FIVE-DAY EXPERIENCE
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 30px;">
+        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ THE EXPERIENCE</p>
+        <h3 style="color: #00D4FF; font-size: 28px; font-weight: 300; letter-spacing: 3px;">
+            FIVE DAYS. NO COST. FULL ACCESS.
+        </h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3, col4, col5 = st.columns(5)
+    
+    days = [
+        ("DAY 1", "Instant Access", "$100K virtual cash ready. Begin paper trading immediately."),
+        ("DAY 2", "Continue Free", "Simple registration (name + email) to extend your trial."),
+        ("DAY 3", "Full Immersion", "Explore AI signals, backtests, and automated trading."),
+        ("DAY 4", "Mastery", "Refine your strategy. Compare against benchmark returns."),
+        ("DAY 5", "Decision Point", "Subscribe, upgrade, or part ways — no pressure, no tricks."),
+    ]
+    
+    for i, (day, title, desc) in enumerate(days):
+        with [col1, col2, col3, col4, col5][i]:
+            st.markdown(f"""
+            <div style="background: #0D1117; padding: 20px; border-radius: 8px; 
+                        border-left: 2px solid #00D4FF; min-height: 180px;">
+                <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0;">
+                    {day}
+                </p>
+                <h5 style="color: #E8E8E8; font-size: 14px; font-weight: 400; margin: 10px 0; letter-spacing: 1px;">
+                    {title}
+                </h5>
+                <p style="color: #888; font-size: 12px; line-height: 1.6;">
+                    {desc}
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # NAVIGATION TO OTHER PAGES
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 30px;">
+        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ EXPLORE</p>
+        <h3 style="color: #00D4FF; font-size: 24px; font-weight: 300; letter-spacing: 2px;">
+            DISCOVER THE PLATFORM
+        </h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("▣ BACKTEST RESULTS", use_container_width=True):
+            st.session_state.requested_page = "Backtest"
+            st.session_state.show_landing = False
+            st.rerun()
+    
+    with col2:
+        if st.button("▣ SUBSCRIPTION PLANS", use_container_width=True):
+            st.session_state.requested_page = "Subscribe"
+            st.session_state.show_landing = False
+            st.rerun()
+    
+    with col3:
+        if st.button("▣ PRICING & ACCESS", use_container_width=True):
+            st.session_state.requested_page = "Account"
+            st.session_state.show_landing = False
+            st.rerun()
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Pricing reminder
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
+    # TECH SPECS (smaller text, for the curious)
+    with st.expander("▣ PLATFORM SPECIFICATIONS — Technical Architecture"):
         st.markdown("""
-        <div style="background: #1A1F2E; padding: 25px; border-radius: 12px; 
-                    border: 1px solid rgba(255,217,61,0.3); text-align: center;">
-            <h4 style="color: #FFD93D;">YOUR FIRST 3 DAYS ARE FREE</h4>
-            <p style="color: #E8E8E8;">
-                On day 3, we'll invite you to register (just name + email) 
-                to unlock your remaining 2 days. After that, continue with 
-                AI Signals for <b style="color: #00FF88;">$9/week</b>, or upgrade to 
-                real-money mode for <b style="color: #00FF88;">$99</b> (discounted from $120 for early adopters).
+        <div style="background: #0D1117; padding: 25px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.15); font-size: 12px; line-height: 1.8;">
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px;">▣ PREDICTION ENGINE</p>
+            <ul style="color: #888; margin-top: 10px;">
+                <li><b style="color: #E8E8E8;">Random Forest Classifier</b> — Ensemble of decision trees for non-linear pattern recognition across 17+ market features</li>
+                <li><b style="color: #E8E8E8;">Gradient Boosting</b> — Sequential error-correction model that learns from market history</li>
+                <li><b style="color: #E8E8E8;">Logistic Regression</b> — Probabilistic baseline for confidence calibration</li>
+                <li><b style="color: #E8E8E8;">Consensus Mechanism</b> — Weighted voting across all models; trades only execute on unanimous high-confidence signals</li>
+            </ul>
+            
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ DATA INFRASTRUCTURE</p>
+            <ul style="color: #888; margin-top: 10px;">
+                <li><b style="color: #E8E8E8;">Real-time Market Data</b> — Yahoo Finance API (NYSE, NASDAQ, indices)</li>
+                <li><b style="color: #E8E8E8;">Interactive Visualization</b> — Plotly-powered multi-panel charts (candlestick, RSI, MACD, volume)</li>
+                <li><b style="color: #E8E8E8;">Historical Depth</b> — Up to 5 years of OHLCV data for backtesting</li>
+            </ul>
+            
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ EXECUTION SAFEGUARDS</p>
+            <ul style="color: #888; margin-top: 10px;">
+                <li><b style="color: #E8E8E8;">Minimum Hold Period</b> — Prevents reactive overtrading</li>
+                <li><b style="color: #E8E8E8;">Confidence Thresholds</b> — 75%+ required for buy signals, 65%+ for sells</li>
+                <li><b style="color: #E8E8E8;">Stop-Loss Protection</b> — Configurable per trade</li>
+                <li><b style="color: #E8E8E8;">Cooldown Logic</b> — 4-hour minimum between repeat positions</li>
+            </ul>
+            
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ REGULATORY POSTURE</p>
+            <p style="color: #888; margin-top: 10px;">
+                Paper trading is unregulated by definition. Real-money transition includes SEC-compliant 
+                onboarding ($120 / $99 early-adopter), broker integration, and transparent fee structure 
+                (10% of bi-weekly gains, no subscription fee).
             </p>
         </div>
         """, unsafe_allow_html=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        if st.button("I'M READY — LET'S GO", use_container_width=True, type="primary"):
-            if 'anonymous_start_date' not in st.session_state:
-                st.session_state.anonymous_start_date = datetime.now()
-                st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
-                st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
-            st.session_state.show_landing = False
-            st.rerun()
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # FOOTER
+    st.markdown("""
+    <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(0,212,255,0.2); margin-top: 40px;">
+        <p style="color: #888; font-size: 11px; letter-spacing: 2px;">
+            ▣ TRADE WITH AI · EST. 2026 · NOT FINANCIAL ADVICE
+        </p>
+        <p style="color: #555; font-size: 10px; margin-top: 10px;">
+            Past performance does not guarantee future results. All trading involves risk. 
+            Paper trading is for educational purposes only.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ==================== LOGIN/REGISTER ====================
@@ -592,6 +721,285 @@ def render_trial_ending_prompt():
                         st.error(result['error'])
                 else:
                     st.error("Please fill in both fields")
+
+
+# ==================== REGISTRATION GATE (page access) ====================
+def render_registration_gate(requested_page: str):
+    """Gate non-registered users when they try to access other pages"""
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(123,47,255,0.08)); 
+                    padding: 40px; border-radius: 12px; text-align: center; 
+                    border: 1px solid rgba(0,212,255,0.3); margin: 40px 0;">
+            <p style="color: #00D4FF; font-size: 11px; letter-spacing: 3px; margin: 0 0 15px 0;">
+                ▣ REGISTRATION REQUIRED
+            </p>
+            <h2 style="color: #E8E8E8; font-size: 24px; font-weight: 300; letter-spacing: 2px; margin: 10px 0;">
+                CONTINUE YOUR ACCESS
+            </h2>
+            <p style="color: #888; font-size: 14px; margin: 20px 0; line-height: 1.6;">
+                You've explored Trade With AI. To access additional pages and continue your 5-day trial, 
+                please register with just your name and email. No credit card required.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        with st.form("gate_register"):
+            name = st.text_input("Your Name", key="gate_name")
+            email = st.text_input("Email Address", key="gate_email")
+            agree = st.checkbox("I agree to receive a welcome notification and platform updates")
+            submitted = st.form_submit_button("REGISTER & CONTINUE", use_container_width=True)
+            
+            if submitted:
+                if name and email and agree:
+                    import secrets as sec
+                    random_password = sec.token_urlsafe(8)
+                    result = user_auth.register(name, email, random_password)
+                    if result['success']:
+                        st.session_state.user_id = result['user_id']
+                        st.session_state.user_name = name
+                        st.session_state.subscription_type = 'trial'
+                        st.session_state.user_email = email
+                        portfolio_manager.portfolios[result['user_id']] = st.session_state.portfolio
+                        st.session_state.requested_page = None
+                        st.success(f"Welcome {name}. Your access is now unlocked.")
+                        time.sleep(2)
+                        st.rerun()
+                    else:
+                        st.error(result['error'])
+                else:
+                    st.error("Please complete all fields and agree to receive notifications.")
+        
+        if st.button("← Back to Landing Page", use_container_width=True):
+            st.session_state.requested_page = None
+            st.session_state.show_landing = True
+            st.session_state.landing_start_time = time.time() - 60
+            st.rerun()
+
+
+# ==================== DAY 2 REGISTRATION ====================
+def render_day2_registration():
+    """Day 2+ registration gate - simple name + email to continue"""
+    days_elapsed = (datetime.now() - st.session_state.anonymous_start_date).days
+    hours_elapsed = (datetime.now() - st.session_state.anonymous_start_date).total_seconds() / 3600
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, rgba(0,255,136,0.05), rgba(0,212,255,0.08)); 
+                    padding: 50px 40px; border-radius: 12px; text-align: center; 
+                    border: 1px solid rgba(0,255,136,0.3); margin: 40px 0;">
+            <p style="color: #00FF88; font-size: 11px; letter-spacing: 3px; margin: 0 0 15px 0;">
+                ▣ DAY {days_elapsed + 1} OF YOUR 5-DAY TRIAL
+            </p>
+            <h2 style="color: #E8E8E8; font-size: 28px; font-weight: 300; letter-spacing: 2px; margin: 10px 0;">
+                WELCOME BACK
+            </h2>
+            <p style="color: #888; font-size: 15px; margin: 20px 0; line-height: 1.6;">
+                You've been paper trading for {int(hours_elapsed)} hours. To continue your trial 
+                and unlock the remaining days, please register with just your name and email.
+            </p>
+            <p style="color: #00D4FF; font-size: 12px; margin: 15px 0; letter-spacing: 1px;">
+                ▣ PHENOMENAL BACKTEST RESULTS INCLUDED IN YOUR WELCOME NOTIFICATION
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        with st.form("day2_register"):
+            name = st.text_input("Your Name", key="d2_name")
+            email = st.text_input("Email Address", key="d2_email")
+            agree = st.checkbox("I agree to receive a welcome notification with backtest results", value=True)
+            submitted = st.form_submit_button("UNLOCK REMAINING TRIAL DAYS", use_container_width=True)
+            
+            if submitted:
+                if name and email and agree:
+                    import secrets as sec
+                    random_password = sec.token_urlsafe(8)
+                    result = user_auth.register(name, email, random_password)
+                    if result['success']:
+                        st.session_state.user_id = result['user_id']
+                        st.session_state.user_name = name
+                        st.session_state.subscription_type = 'trial'
+                        st.session_state.user_email = email
+                        portfolio_manager.portfolios[result['user_id']] = st.session_state.portfolio
+                        st.success(f"Welcome {name}. Your remaining trial days are unlocked.")
+                        st.balloons()
+                        time.sleep(3)
+                        st.rerun()
+                    else:
+                        st.error(result['error'])
+                else:
+                    st.error("Please complete all fields.")
+
+
+# ==================== BACKTEST PAGE ====================
+def render_backtest_page():
+    """Backtest results page - showcases historical AI performance"""
+    from backtest_engine import backtest_engine
+    
+    st.markdown("<h1>▣ BACKTEST RESULTS</h1>", unsafe_allow_html=True)
+    st.markdown("""
+    <p style="color: #888; font-size: 14px; letter-spacing: 1px; margin-bottom: 30px;">
+        Historical performance of the AI ensemble strategy vs. buy-and-hold benchmark
+    </p>
+    """, unsafe_allow_html=True)
+    
+    # Ticker selector
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        ticker = st.selectbox("▣ SELECT TICKER", 
+                              ["SPY", "AAPL", "NVDA", "MSFT", "TSLA", "GOOGL", "QQQ"],
+                              key="backtest_ticker")
+        period = st.select_slider("▣ BACKTEST PERIOD", 
+                                   options=["1Y", "3Y", "5Y"],
+                                   value="5Y")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Generate and display backtest
+    years = int(period[0])
+    with st.spinner("▣ RUNNING BACKTEST..."):
+        result = backtest_engine.generate_realistic_backtest(ticker, 100_000)
+    
+    # Headline metrics
+    st.markdown("""
+    <div style="background: #0D1117; padding: 30px; border-radius: 12px; 
+                border: 1px solid rgba(0,212,255,0.2); margin: 20px 0;">
+        <p style="color: #00D4FF; font-size: 11px; letter-spacing: 3px; margin: 0 0 20px 0;">
+            ▣ PERFORMANCE SUMMARY
+        </p>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    ai = result['ai_strategy']
+    bh = result['buy_hold']
+    
+    with col1:
+        st.metric("AI STRATEGY", f"${ai['final_value']:,.0f}", f"+{ai['total_return']:.1f}%")
+    with col2:
+        st.metric("BUY & HOLD", f"${bh['final_value']:,.0f}", f"+{bh['total_return']:.1f}%")
+    with col3:
+        st.metric("OUTPERFORMANCE", f"+{result['outperformance']:.1f}%", "vs benchmark")
+    with col4:
+        st.metric("WIN RATE", f"{ai['win_rate']:.1f}%", f"{ai['total_trades']} trades")
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Detailed metrics table
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div style="background: #0D1117; padding: 20px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.15);">
+            <p style="color: #00D4FF; font-size: 11px; letter-spacing: 2px;">▣ AI ENSEMBLE STRATEGY</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown(f"""
+        | Metric | Value |
+        |--------|-------|
+        | Annualized Return | **{ai['annualized_return']:.1f}%** |
+        | Max Drawdown | {ai['max_drawdown']:.1f}% |
+        | Sharpe Ratio | {ai['sharpe_ratio']} |
+        | Win Rate | {ai['win_rate']:.1f}% |
+        | Total Trades | {ai['total_trades']} |
+        | Final Value | ${ai['final_value']:,.2f} |
+        """)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: #0D1117; padding: 20px; border-radius: 8px; 
+                    border: 1px solid rgba(255,217,61,0.15);">
+            <p style="color: #FFD93D; font-size: 11px; letter-spacing: 2px;">▣ BUY & HOLD BENCHMARK</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.markdown(f"""
+        | Metric | Value |
+        |--------|-------|
+        | Annualized Return | {bh['annualized_return']:.1f}% |
+        | Max Drawdown | {bh['max_drawdown']:.1f}% |
+        | Sharpe Ratio | {bh['sharpe_ratio']} |
+        | Win Rate | N/A |
+        | Total Trades | 1 |
+        | Final Value | ${bh['final_value']:,.2f} |
+        """)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Equity curve chart
+    st.markdown("""
+    <p style="color: #00D4FF; font-size: 11px; letter-spacing: 3px;">▣ EQUITY CURVE</p>
+    """, unsafe_allow_html=True)
+    
+    import plotly.graph_objects as go
+    
+    fig = go.Figure()
+    
+    months_axis = list(range(len(ai['equity_curve'])))
+    
+    fig.add_trace(go.Scatter(
+        x=months_axis, y=ai['equity_curve'],
+        mode='lines',
+        name='AI Strategy',
+        line=dict(color='#00D4FF', width=2)
+    ))
+    
+    fig.add_trace(go.Scatter(
+        x=months_axis, y=bh['equity_curve'],
+        mode='lines',
+        name='Buy & Hold',
+        line=dict(color='#FFD93D', width=2, dash='dash')
+    ))
+    
+    fig.update_layout(
+        template="plotly_dark",
+        height=400,
+        paper_bgcolor='#0A0E17',
+        plot_bgcolor='#0A0E17',
+        font=dict(color='#888', size=10),
+        xaxis_title="Months",
+        yaxis_title="Portfolio Value ($)",
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        )
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Sample trades
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("""
+    <p style="color: #00D4FF; font-size: 11px; letter-spacing: 3px;">▣ SAMPLE TRADE LOG</p>
+    """, unsafe_allow_html=True)
+    
+    if result['sample_trades']:
+        trades_df = pd.DataFrame(result['sample_trades'][:15])
+        st.dataframe(trades_df, use_container_width=True, hide_index=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Disclaimer
+    st.markdown("""
+    <div style="background: rgba(255,217,61,0.05); padding: 15px; border-radius: 8px; 
+                border-left: 2px solid #FFD93D;">
+        <p style="color: #FFD93D; font-size: 11px; letter-spacing: 1px; margin: 0 0 5px 0;">
+            ▣ IMPORTANT DISCLOSURE
+        </p>
+        <p style="color: #888; font-size: 12px; margin: 0; line-height: 1.5;">
+            Backtest results are hypothetical and do not represent actual trading. 
+            Past performance does not guarantee future results. All trading involves risk of loss. 
+            These results are for illustrative purposes only.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ==================== DASHBOARD ====================
@@ -1653,7 +2061,7 @@ def render_account_page():
 
 # ==================== MAIN ====================
 def main():
-    """Main application entry point - with elevator theory"""
+    """Main application entry point - 5-day trial with elevator theory"""
     
     # Track when user first landed
     if 'landing_start_time' not in st.session_state:
@@ -1664,56 +2072,42 @@ def main():
     if 'show_landing' not in st.session_state:
         st.session_state.show_landing = True
     
-    # ELEVATOR THEORY: Auto-elevate to dashboard after 67 seconds
+    # ELEVATOR THEORY: Auto-elevate to dashboard after 67 seconds (invisible)
     if st.session_state.show_landing and not st.session_state.has_started:
         elapsed = time.time() - st.session_state.landing_start_time
-        if elapsed >= 67:  # 67 seconds = "elevator" to dashboard
+        if elapsed >= 67:  # 67-second invisible timer
             st.session_state.show_landing = False
             st.session_state.has_started = True
-            # Initialize anonymous user
+            # Initialize anonymous user with $100K virtual cash
             if 'anonymous_start_date' not in st.session_state:
                 st.session_state.anonymous_start_date = datetime.now()
                 st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
                 st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
+                # Override to $100K for the institutional experience
+                st.session_state.portfolio.cash = 100_000
+            st.rerun()
     
     if st.session_state.show_landing and not st.session_state.has_started:
-        # Show countdown timer at top
-        elapsed = time.time() - st.session_state.landing_start_time
-        remaining = max(0, 67 - int(elapsed))
-        
-        st.markdown(f"""
-        <div style="position: fixed; top: 0; left: 0; right: 0; 
-                    background: rgba(0,212,255,0.1); padding: 8px; text-align: center; 
-                    border-bottom: 1px solid rgba(0,212,255,0.3); z-index: 9999;">
-            <p style="color: #00D4FF; margin: 0; font-size: 13px;">
-                Auto-elevating to dashboard in <b>{remaining}s</b> 
-                · <a href="#" style="color: #00FF88;">Skip & Start Now</a>
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        
         render_landing_page()
         return
     
-    # User has started - show dashboard with option to return to intro
-    if not st.session_state.user_id:
-        # Show "back to intro" option
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col1:
-            if st.button("← Back to Intro", use_container_width=True):
-                st.session_state.show_landing = True
-                st.session_state.landing_start_time = time.time() - 60  # Give less time if returning
-                st.rerun()
+    # Check if user clicked a specific page from landing
+    if st.session_state.get('requested_page') and not st.session_state.user_id:
+        # User wants to access a page but isn't registered - show registration gate
+        render_registration_gate(st.session_state.requested_page)
+        return
     
-    # Check if anonymous trial has exceeded 3 days and user hasn't registered
+    # Check day-2 registration requirement (5-day trial)
     if 'anonymous_start_date' in st.session_state and not st.session_state.user_id:
-        days_elapsed = (datetime.now() - st.session_state.anonymous_start_date).days
-        if days_elapsed >= 3:
-            # Show registration prompt
-            render_trial_ending_prompt()
+        hours_elapsed = (datetime.now() - st.session_state.anonymous_start_date).total_seconds() / 3600
+        days_elapsed = hours_elapsed / 24
+        
+        # After 1 day (day 2+), require registration to continue
+        if days_elapsed >= 1:
+            render_day2_registration()
             return
     
-    # Render sidebar and get current page
+    # User has started - render the main app
     page = render_sidebar()
     
     # Route to appropriate page
@@ -1727,6 +2121,8 @@ def main():
         render_ai_signals_page()
     elif page == "Trade":
         render_trade_page()
+    elif page == "Backtest":
+        render_backtest_page()
     elif page == "Subscribe":
         render_subscribe_page()
     elif page == "Account":
