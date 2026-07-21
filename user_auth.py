@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from dataclasses import dataclass, asdict
 from typing import Optional
 from config import FREE_TRIAL_DAYS, PRICING
+from alpaca_integration import encrypt_secret, decrypt_secret, quick_test
 
 
 @dataclass
@@ -23,6 +24,13 @@ class User:
     subscription_start: str
     trial_end: str
     is_active: bool = True
+    # Alpaca brokerage (encrypted at rest; user connects their own account)
+    alpaca_api_key_enc: Optional[str] = None
+    alpaca_secret_key_enc: Optional[str] = None
+    alpaca_paper: bool = True
+    alpaca_account_id: Optional[str] = None
+    alpaca_connected_at: Optional[str] = None
+    alpaca_last_verified: Optional[str] = None
 
 
 class UserAuth:
@@ -149,6 +157,80 @@ class UserAuth:
             return {"active": False, "is_trial": True, "days_remaining": 0}
         
         return {"active": True, "is_trial": True, "days_remaining": (trial_end - now).days}
+
+    # ----- ALPACA BROKERAGE CONNECTION -----
+
+    def connect_alpaca(self, user_id: str, api_key: str, secret_key: str,
+                       paper: bool = True) -> dict:
+        """
+        Validate and store user's Alpaca credentials.
+        Tests connection first — never stores keys that don't work.
+        """
+        user = self.get_user(user_id)
+        if not user:
+            return {"success": False, "error": "User not found"}
+
+        # Test the credentials BEFORE saving anything
+        test = quick_test(api_key, secret_key, paper=paper)
+        if not test["success"]:
+            return {"success": False, "error": f"Connection failed: {test.get('error', 'unknown')}"}
+
+        # Encrypt and store
+        try:
+            user.alpaca_api_key_enc = encrypt_secret(api_key)
+            user.alpaca_secret_key_enc = encrypt_secret(secret_key)
+            user.alpaca_paper = paper
+            user.alpaca_account_id = test.get("account_id")
+            user.alpaca_connected_at = datetime.now().isoformat()
+            user.alpaca_last_verified = datetime.now().isoformat()
+            self._save_users()
+
+            return {
+                "success": True,
+                "account_id": user.alpaca_account_id,
+                "is_paper": paper,
+                "equity": test.get("equity"),
+                "buying_power": test.get("buying_power"),
+            }
+        except Exception as e:
+            return {"success": False, "error": f"Failed to save credentials: {e}"}
+
+    def disconnect_alpaca(self, user_id: str) -> dict:
+        """Remove user's stored Alpaca credentials. Their broker account is unaffected."""
+        user = self.get_user(user_id)
+        if not user:
+            return {"success": False, "error": "User not found"}
+        if not user.alpaca_api_key_enc:
+            return {"success": False, "error": "No Alpaca account connected"}
+
+        user.alpaca_api_key_enc = None
+        user.alpaca_secret_key_enc = None
+        user.alpaca_paper = True
+        user.alpaca_account_id = None
+        user.alpaca_connected_at = None
+        user.alpaca_last_verified = None
+        self._save_users()
+        return {"success": True}
+
+    def get_alpaca_client(self, user_id: str):
+        """
+        Return a live AlpacaClient for the user, or None if not connected.
+        Caller is responsible for NOT logging the client or its keys.
+        """
+        from alpaca_integration import AlpacaClient  # late import for speed
+        user = self.get_user(user_id)
+        if not user or not user.alpaca_api_key_enc:
+            return None
+        try:
+            api_key = decrypt_secret(user.alpaca_api_key_enc)
+            secret_key = decrypt_secret(user.alpaca_secret_key_enc)
+            return AlpacaClient(api_key, secret_key, paper=user.alpaca_paper)
+        except Exception as e:
+            return None
+
+    def is_alpaca_connected(self, user_id: str) -> bool:
+        user = self.get_user(user_id)
+        return bool(user and user.alpaca_api_key_enc)
 
 
 class SubscriptionManager:

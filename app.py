@@ -2189,6 +2189,91 @@ def render_account_page():
                 """, unsafe_allow_html=True)
                 st.table(pd.DataFrame(stats_data))
                 st.markdown("</div>", unsafe_allow_html=True)
+
+            # ==================== BROKERAGE CONNECTION ====================
+            st.divider()
+            st.markdown("### 🔗 CONNECT BROKERAGE (ALPACA)")
+            st.markdown("""
+            <div style="background:rgba(0,212,255,0.05); padding:15px; border-radius:12px; border:1px solid rgba(0,212,255,0.3); margin-bottom:15px;">
+                <p style="color:#E8E8E8; font-size:13px; margin:0;">
+                    Connect your <b style="color:#00D4FF;">own Alpaca brokerage account</b> to enable real-money signal execution.
+                    We never hold your funds. You can revoke access anytime from your Alpaca dashboard.
+                </p>
+                <p style="color:#888; font-size:11px; margin:8px 0 0;">
+                    Get your API keys at: <a href="https://app.alpaca.markets/signup" target="_blank" style="color:#00D4FF;">app.alpaca.markets</a>
+                    → Account → API Keys. Use <b>Paper</b> keys first to test.
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            if user_auth.is_alpaca_connected(st.session_state.user_id):
+                # Show connected state
+                user = user_auth.get_user(st.session_state.user_id)
+                client = user_auth.get_alpaca_client(st.session_state.user_id)
+                if client:
+                    try:
+                        acc = client.get_account()
+                        st.markdown(f"""
+                        <div style="background:rgba(0,255,136,0.1); padding:20px; border-radius:12px; border:1px solid #00FF88;">
+                            <h4 style="color:#00FF88; margin:0;">✓ ALPACA CONNECTED ({'PAPER' if acc.is_paper else 'LIVE'})</h4>
+                            <p style="color:#E8E8E8; margin:8px 0 0; font-size:13px;">
+                                Account: <code>{acc.account_id}</code> ·
+                                Equity: <b style="color:#00D4FF;">${acc.equity:,.2f}</b> ·
+                                Cash: <b style="color:#E8E8E8;">${acc.cash:,.2f}</b> ·
+                                Buying Power: <b style="color:#00FF88;">${acc.buying_power:,.2f}</b>
+                            </p>
+                            <p style="color:#888; margin:5px 0 0; font-size:11px;">
+                                Day P/L: ${acc.day_pnl:+,.2f} ({acc.day_pnl_pct:+.2f}%)
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    except Exception as e:
+                        st.error(f"Stored credentials failed to authenticate. Please reconnect.")
+                else:
+                    st.error("Stored credentials could not be decrypted. Please reconnect.")
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("🔄 REFRESH ACCOUNT", use_container_width=True):
+                        st.rerun()
+                with col2:
+                    if st.button("🔌 DISCONNECT", use_container_width=True, type="secondary"):
+                        result = user_auth.disconnect_alpaca(st.session_state.user_id)
+                        if result["success"]:
+                            st.success("Alpaca disconnected.")
+                            st.rerun()
+                        else:
+                            st.error(result.get("error"))
+            else:
+                # Show connect form
+                with st.form("alpaca_connect_form"):
+                    st.markdown("**Enter your Alpaca API credentials:**")
+                    api_key = st.text_input("API Key (Key ID)", type="password",
+                                             help="Found in Alpaca dashboard → API Keys")
+                    secret_key = st.text_input("Secret Key", type="password",
+                                                help="Shown only once when you create the key")
+                    paper_mode = st.checkbox("Paper trading (test account)", value=True,
+                                              help="Uncheck ONLY for live trading. Always test paper first.")
+
+                    submitted = st.form_submit_button("🔗 CONNECT", use_container_width=True)
+                    if submitted:
+                        if not api_key or not secret_key:
+                            st.error("Please provide both API key and secret.")
+                        else:
+                            with st.spinner("Verifying credentials with Alpaca..."):
+                                result = user_auth.connect_alpaca(
+                                    st.session_state.user_id, api_key, secret_key, paper=paper_mode
+                                )
+                            if result["success"]:
+                                st.success(f"Connected! Account {result['account_id']} · ${result.get('equity', 0):,.2f}")
+                                # Clear sensitive form fields
+                                st.session_state.pop("alpaca_connect_form", None)
+                                st.rerun()
+                            else:
+                                st.error(f"Connection failed: {result.get('error')}")
+
+                st.caption("🔒 Your credentials are encrypted at rest with Fernet. They never appear in our logs.")
+
         else:
             st.info("Please log in to view your account details.")
     else:

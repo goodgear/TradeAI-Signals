@@ -59,3 +59,10 @@ THEME = {
 
 # Session/Cache Settings
 CACHE_TTL = 300  # 5 minutes
+
+# Alpaca Brokerage Integration
+# ARMAC_ENCRYPTION_KEY: 32 url-safe base64 bytes. Generate with:
+#   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+# Store in Streamlit secrets (for cloud) or .env (for local). NEVER commit.
+ALPACA_PAPER_DEFAULT = True  # Start in paper mode — flip to False only after live testing
+ALPACA_CONNECT_ENABLED = os.environ.get("ALPACA_CONNECT_ENABLED", "true").lower() == "true"
