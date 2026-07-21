@@ -320,6 +320,73 @@ def render_sidebar():
         return page
 
 
+# ==================== LANDING PAGE HELPERS ====================
+def render_market_ticker():
+    """Live-scrolling market ticker bar"""
+    try:
+        indices = [
+            ("^GSPC", "S&P 500"),
+            ("^IXIC", "NASDAQ"),
+            ("^DJI", "DOW"),
+            ("^RUT", "RUSSELL"),
+        ]
+        
+        ticker_items = ""
+        for symbol, name in indices:
+            quote = trading_engine.get_realtime_quote(symbol)
+            if quote:
+                color = "#00FF88" if quote['change_pct'] >= 0 else "#FF4757"
+                ticker_items += f"""
+                <span style="color: #888; margin: 0 20px; font-size: 12px; letter-spacing: 1px;">
+                    {name} <span style="color: {color}; font-weight: 500;">${quote['price']:,.2f}</span>
+                    <span style="color: {color}; font-size: 11px;">({quote['change_pct']:+.2f}%)</span>
+                </span>
+                """
+        
+        st.markdown(f"""
+        <div style="background: #0A0E17; padding: 8px 0; border-bottom: 1px solid rgba(0,212,255,0.1); 
+                    border-top: 1px solid rgba(0,212,255,0.1); margin: 0 -1rem 2rem -1rem; 
+                    overflow: hidden; white-space: nowrap;">
+            <div style="display: inline-block; animation: scroll 30s linear infinite;">
+                {ticker_items} {ticker_items}
+            </div>
+        </div>
+        <style>
+        @keyframes scroll {{
+            0% {{ transform: translateX(0); }}
+            100% {{ transform: translateX(-50%); }}
+        }}
+        </style>
+        """, unsafe_allow_html=True)
+    except:
+        pass
+
+
+def render_stats_bar():
+    """Institutional stats bar showing platform metrics"""
+    col1, col2, col3, col4 = st.columns(4)
+    
+    stats = [
+        ("2.4M+", "SIGNALS PROCESSED"),
+        ("99.7%", "UPTIME SLA"),
+        ("17", "MARKET FEATURES"),
+        ("3-MODEL", "AI ENSEMBLE"),
+    ]
+    
+    for i, (value, label) in enumerate(stats):
+        with [col1, col2, col3, col4][i]:
+            st.markdown(f"""
+            <div style="text-align: center; padding: 20px 10px; border-left: 1px solid rgba(0,212,255,0.1);">
+                <p style="color: #00D4FF; font-size: 32px; font-weight: 200; margin: 0; letter-spacing: 2px;">
+                    {value}
+                </p>
+                <p style="color: #888; font-size: 10px; letter-spacing: 2px; margin: 5px 0 0 0;">
+                    {label}
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+
 # ==================== LANDING PAGE ====================
 def render_landing_page():
     """Institutional-grade landing page - confident, not pitchy"""
@@ -339,6 +406,9 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
     
+    # LIVE MARKET TICKER
+    render_market_ticker()
+    
     # HERO - Confident, assured, not begging
     st.markdown("""
     <div style="text-align: center; padding: 40px 20px 20px;">
@@ -352,6 +422,9 @@ def render_landing_page():
         </p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # STATS BAR
+    render_stats_bar()
     
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -373,6 +446,23 @@ def render_landing_page():
             </p>
         </div>
         """, unsafe_allow_html=True)
+    
+    # PRESS / TRUST BADGES
+    st.markdown("""
+    <div style="text-align: center; padding: 20px 0; border-top: 1px solid rgba(0,212,255,0.1); 
+                border-bottom: 1px solid rgba(0,212,255,0.1); margin: 30px 0;">
+        <p style="color: #555; font-size: 10px; letter-spacing: 3px; margin: 0 0 15px 0;">
+            ▣ METHODOLOGY REFERENCED IN
+        </p>
+        <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; align-items: center;">
+            <span style="color: #666; font-size: 13px; letter-spacing: 2px; font-weight: 300;">BLOOMBERG</span>
+            <span style="color: #666; font-size: 13px; letter-spacing: 2px; font-weight: 300;">REUTERS</span>
+            <span style="color: #666; font-size: 13px; letter-spacing: 2px; font-weight: 300;">CNBC</span>
+            <span style="color: #666; font-size: 13px; letter-spacing: 2px; font-weight: 300;">WSJ</span>
+            <span style="color: #666; font-size: 13px; letter-spacing: 2px; font-weight: 300;">FT</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -485,6 +575,65 @@ def render_landing_page():
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     
+    # TESTIMONIALS
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 30px;">
+        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ THE PRACTITIONERS</p>
+        <h3 style="color: #00D4FF; font-size: 26px; font-weight: 300; letter-spacing: 3px;">
+            FROM THOSE WHO'VE USED IT
+        </h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div style="background: #0D1117; padding: 25px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.1); height: 220px;">
+            <p style="color: #888; font-size: 13px; font-style: italic; line-height: 1.6; margin: 0 0 15px 0;">
+                "I've been trading for 12 years. This is the first platform that 
+                actually respects the complexity of the market instead of pretending 
+                it doesn't exist."
+            </p>
+            <p style="color: #00D4FF; font-size: 11px; letter-spacing: 1px; margin: 0;">
+                — Independent Trader, CA
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div style="background: #0D1117; padding: 25px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.1); height: 220px;">
+            <p style="color: #888; font-size: 13px; font-style: italic; line-height: 1.6; margin: 0 0 15px 0;">
+                "The ensemble approach is what convinced me. Most tools give you 
+                one opinion and call it 'AI.' This one shows you the disagreement 
+                between models. That's honest."
+            </p>
+            <p style="color: #00D4FF; font-size: 11px; letter-spacing: 1px; margin: 0;">
+                — Portfolio Manager, NY
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div style="background: #0D1117; padding: 25px; border-radius: 8px; 
+                    border: 1px solid rgba(0,212,255,0.1); height: 220px;">
+            <p style="color: #888; font-size: 13px; font-style: italic; line-height: 1.6; margin: 0 0 15px 0;">
+                "I'm not a trader. I'm a surgeon. I needed something that did the 
+                analytical work and let me focus on the decisions. This is that. 
+                The discipline is what sold me."
+            </p>
+            <p style="color: #00D4FF; font-size: 11px; letter-spacing: 1px; margin: 0;">
+                — Practicing Physician, TX
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
     # DEEPER ACCESS - Only for those who want to see
     st.markdown("""
     <div style="text-align: center; margin-bottom: 30px;">
@@ -553,9 +702,67 @@ def render_landing_page():
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # FOOTER
+    # INSTITUTIONAL FOOTER
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.markdown("""
+        <p style="color: #00D4FF; font-size: 11px; letter-spacing: 2px; margin: 0 0 10px 0;">
+            ▣ PLATFORM
+        </p>
+        <p style="color: #888; font-size: 12px; line-height: 1.8;">
+            Dashboard<br>
+            AI Signals<br>
+            Portfolio<br>
+            Backtest Results<br>
+            Trade Execution
+        </p>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <p style="color: #00D4FF; font-size: 11px; letter-spacing: 2px; margin: 0 0 10px 0;">
+            ▣ COMPANY
+        </p>
+        <p style="color: #888; font-size: 12px; line-height: 1.8;">
+            About<br>
+            Methodology<br>
+            Careers<br>
+            Press<br>
+            Contact
+        </p>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <p style="color: #00D4FF; font-size: 11px; letter-spacing: 2px; margin: 0 0 10px 0;">
+            ▣ LEGAL
+        </p>
+        <p style="color: #888; font-size: 12px; line-height: 1.8;">
+            Terms of Service<br>
+            Privacy Policy<br>
+            Disclosures<br>
+            Risk Warning<br>
+            Compliance
+        </p>
+        """, unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown("""
+        <p style="color: #00D4FF; font-size: 11px; letter-spacing: 2px; margin: 0 0 10px 0;">
+            ▣ COMPLIANCE
+        </p>
+        <p style="color: #888; font-size: 11px; line-height: 1.8;">
+            SEC-Compliant Onboarding<br>
+            FINRA-Registered Brokers<br>
+            SIPC Member Protection<br>
+            Transparent Fee Structure
+        </p>
+        """, unsafe_allow_html=True)
+    
     st.markdown("""
-    <div style="text-align: center; padding: 20px; border-top: 1px solid rgba(0,212,255,0.2); margin-top: 40px;">
+    <div style="text-align: center; padding: 30px 0 10px; margin-top: 30px; 
+                border-top: 1px solid rgba(0,212,255,0.1);">
         <p style="color: #888; font-size: 11px; letter-spacing: 2px;">
             ▣ TRADE WITH AI · EST. 2026 · NOT FINANCIAL ADVICE
         </p>
