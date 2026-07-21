@@ -19,6 +19,7 @@ from portfolio_manager import portfolio_manager, Portfolio
 from user_auth import user_auth, subscription_manager
 from stripe_integration import stripe_manager, get_plan_details
 from meta_tags import add_meta_tags
+from ai_assistant import ai_assistant
 from config import THEME, INITIAL_BALANCE, DEFAULT_TICKERS, PRICING
 
 # Add social media meta tags for link previews
@@ -321,7 +322,7 @@ def render_sidebar():
 
 # ==================== LANDING PAGE ====================
 def render_landing_page():
-    """Institutional-grade landing page with 67s elevator theory"""
+    """Institutional-grade landing page - confident, not pitchy"""
     
     # NAVIGATION BAR (top)
     st.markdown("""
@@ -338,50 +339,44 @@ def render_landing_page():
     </div>
     """, unsafe_allow_html=True)
     
-    # HERO SECTION - Sophisticated & Institutional
+    # HERO - Confident, assured, not begging
     st.markdown("""
-    <div style="text-align: center; padding: 30px 20px 20px;">
+    <div style="text-align: center; padding: 40px 20px 20px;">
         <h1 style="font-size: 64px; margin-bottom: 5px; letter-spacing: 6px; font-weight: 300;">
             TRADE WITH AI
         </h1>
         <div style="height: 1px; width: 200px; background: linear-gradient(90deg, transparent, #00D4FF, transparent); 
                     margin: 20px auto;"></div>
         <p style="color: #E8E8E8; font-size: 18px; letter-spacing: 2px; margin: 20px 0; font-weight: 300;">
-            INSTITUTIONAL-GRADE SIGNAL INFRASTRUCTURE
-        </p>
-        <p style="color: #888; font-size: 13px; letter-spacing: 1px; margin: 10px 0;">
-            The same AI-driven methodology used by billion-dollar trading desks — now accessible to individual investors
+            A SOPHISTICATED MARKETS INFRASTRUCTURE
         </p>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # THE OFFER - $100K Virtual Cash
+    # THE POSITIONING - "We know what this is worth" tone
     col1, col2, col3 = st.columns([1, 3, 1])
     with col2:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(123,47,255,0.08)); 
-                    padding: 40px; border-radius: 12px; text-align: center; 
-                    border: 1px solid rgba(0,212,255,0.3); margin-bottom: 30px;">
-            <p style="color: #888; font-size: 11px; letter-spacing: 3px; margin: 0 0 15px 0;">
-                ▣ INSTANT ACCESS · NO COMMITMENT
+        <div style="text-align: center; max-width: 900px; margin: 0 auto;">
+            <p style="color: #E8E8E8; font-size: 17px; line-height: 1.9; font-weight: 300; margin: 20px 0;">
+                Most market participants are working with incomplete information, 
+                reactive strategies, and tools that were designed for a different era.
             </p>
-            <h2 style="color: #00D4FF; font-size: 36px; margin: 0 0 10px 0; font-weight: 300; letter-spacing: 2px;">
-                $100,000 VIRTUAL CASH
-            </h2>
-            <p style="color: #E8E8E8; font-size: 15px; margin: 15px 0; line-height: 1.6;">
-                Begin paper trading immediately. No credit card. No risk exposure. 
-                Real market data, real signals, real execution — zero capital at risk.
+            <p style="color: #E8E8E8; font-size: 17px; line-height: 1.9; font-weight: 300; margin: 20px 0;">
+                The same quantitative methodologies that institutional desks have refined 
+                over decades are now available in a single, transparent platform.
             </p>
-            <p style="color: #00FF88; font-size: 12px; margin: 15px 0; letter-spacing: 1px;">
-                ▣ Real-time market data   ▣ AI ensemble predictions   ▣ Automated execution
+            <p style="color: #00D4FF; font-size: 15px; letter-spacing: 2px; margin: 30px 0; font-weight: 300;">
+                NOT FOR EVERYONE. BUT FOR THOSE WHO SEE IT — WORTH KNOWING ABOUT.
             </p>
         </div>
         """, unsafe_allow_html=True)
     
+    st.markdown("<br>", unsafe_allow_html=True)
+    
     # THE 67-SECOND ELEVATOR (invisible)
-    # User is being auto-elevated - we don't show a countdown, just let it happen
     if 'landing_start_time' not in st.session_state:
         st.session_state.landing_start_time = time.time()
     
@@ -393,36 +388,41 @@ def render_landing_page():
             st.session_state.anonymous_start_date = datetime.now()
             st.session_state.anonymous_id = f"guest_{random.randint(1000, 9999)}"
             st.session_state.portfolio = Portfolio(user_id=st.session_state.anonymous_id)
+            st.session_state.portfolio.cash = 100_000
         st.rerun()
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # INSTITUTIONAL POSITIONING - "How billion-dollar entities do it"
-    col1, col2, col3 = st.columns([1, 2, 1])
+    # ACCESS SECTION - Subtle, not pushy
+    col1, col2, col3 = st.columns([1, 3, 1])
     with col2:
         st.markdown("""
-        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <p style="color: #E8E8E8; font-size: 16px; line-height: 1.9; font-weight: 300;">
-                The world's most sophisticated trading operations have spent decades building proprietary 
-                AI systems to identify market opportunities. These systems are the foundation of how 
-                institutional capital moves — methodically, systematically, and with extraordinary precision.
+        <div style="background: #0D1117; padding: 40px; border-radius: 12px; 
+                    border: 1px solid rgba(0,212,255,0.2); text-align: center;">
+            <p style="color: #888; font-size: 11px; letter-spacing: 3px; margin: 0 0 15px 0;">
+                ▣ OBSERVE THE PLATFORM IN MOTION
             </p>
-            <p style="color: #E8E8E8; font-size: 16px; line-height: 1.9; font-weight: 300; margin-top: 20px;">
-                <b style="color: #00D4FF;">Trade With AI</b> brings that same institutional methodology 
-                to individual investors. Not a toy. Not a game. A legitimate, transparent, 
-                SEC-compliant platform built on proven quantitative principles.
+            <h2 style="color: #00D4FF; font-size: 32px; margin: 0 0 10px 0; font-weight: 300; letter-spacing: 2px;">
+                $100,000 VIRTUAL CASH
+            </h2>
+            <p style="color: #888; font-size: 14px; margin: 15px 0; line-height: 1.6; font-weight: 300;">
+                Experience the full system — real-time data, AI signals, automated execution — 
+                with simulated capital. No credit card. No risk exposure. No commitment.
+            </p>
+            <p style="color: #00FF88; font-size: 11px; margin: 20px 0 0 0; letter-spacing: 1px;">
+                ▣ FIVE DAYS · FULL ACCESS · INVISIBLE TIMER
             </p>
         </div>
         """, unsafe_allow_html=True)
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # CAPABILITIES - The Three Pillars
+    # THE THREE PILLARS - Brief, not oversold
     st.markdown("""
     <div style="text-align: center; margin-bottom: 30px;">
-        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ THE PLATFORM</p>
-        <h3 style="color: #00D4FF; font-size: 28px; font-weight: 300; letter-spacing: 3px;">
-            THREE PILLARS OF SIGNAL INTELLIGENCE
+        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ THE SYSTEM</p>
+        <h3 style="color: #00D4FF; font-size: 26px; font-weight: 300; letter-spacing: 3px;">
+            BUILT ON THREE PRINCIPLES
         </h3>
     </div>
     """, unsafe_allow_html=True)
@@ -432,18 +432,17 @@ def render_landing_page():
     with col1:
         st.markdown("""
         <div style="background: #0D1117; padding: 30px; border-radius: 8px; 
-                    border: 1px solid rgba(0,212,255,0.15); height: 280px;
+                    border: 1px solid rgba(0,212,255,0.15); height: 240px;
                     border-top: 2px solid #00D4FF;">
             <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0 0 10px 0;">
-                PILLAR I
+                I
             </p>
-            <h4 style="color: #E8E8E8; font-size: 18px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
+            <h4 style="color: #E8E8E8; font-size: 16px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
                 ENSEMBLE INTELLIGENCE
             </h4>
-            <p style="color: #888; font-size: 13px; line-height: 1.7; margin-top: 15px;">
-                Multiple AI models working in concert: Random Forest, Gradient Boosting, 
-                and Logistic Regression. Each model contributes its strength; together they 
-                surface only high-confidence opportunities.
+            <p style="color: #888; font-size: 12px; line-height: 1.7; margin-top: 15px;">
+                Three AI models — Random Forest, Gradient Boosting, Logistic Regression — 
+                working in concert. Consensus is required before any action is taken.
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -451,18 +450,17 @@ def render_landing_page():
     with col2:
         st.markdown("""
         <div style="background: #0D1117; padding: 30px; border-radius: 8px; 
-                    border: 1px solid rgba(0,212,255,0.15); height: 280px;
+                    border: 1px solid rgba(0,212,255,0.15); height: 240px;
                     border-top: 2px solid #00D4FF;">
             <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0 0 10px 0;">
-                PILLAR II
+                II
             </p>
-            <h4 style="color: #E8E8E8; font-size: 18px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
+            <h4 style="color: #E8E8E8; font-size: 16px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
                 TECHNICAL PRECISION
             </h4>
-            <p style="color: #888; font-size: 13px; line-height: 1.7; margin-top: 15px;">
-                RSI, MACD, Bollinger Bands, Stochastic, OBV — the same technical indicators 
-                that professional traders rely on, calculated in real-time on live market data 
-                from Yahoo Finance.
+            <p style="color: #888; font-size: 12px; line-height: 1.7; margin-top: 15px;">
+                RSI, MACD, Bollinger Bands, Stochastic, OBV — calculated continuously 
+                on live market data from NYSE and NASDAQ.
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -470,70 +468,27 @@ def render_landing_page():
     with col3:
         st.markdown("""
         <div style="background: #0D1117; padding: 30px; border-radius: 8px; 
-                    border: 1px solid rgba(0,212,255,0.15); height: 280px;
+                    border: 1px solid rgba(0,212,255,0.15); height: 240px;
                     border-top: 2px solid #00D4FF;">
             <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0 0 10px 0;">
-                PILLAR III
+                III
             </p>
-            <h4 style="color: #E8E8E8; font-size: 18px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
-                AUTOMATED EXECUTION
+            <h4 style="color: #E8E8E8; font-size: 16px; font-weight: 400; letter-spacing: 1px; margin: 10px 0;">
+                EXECUTION DISCIPLINE
             </h4>
-            <p style="color: #888; font-size: 13px; line-height: 1.7; margin-top: 15px;">
-                Smart position sizing, cooldown logic, and stop-loss protection ensure trades 
-                are executed with the discipline of an institutional desk. You set the parameters; 
-                the system operates within them.
+            <p style="color: #888; font-size: 12px; line-height: 1.7; margin-top: 15px;">
+                Position sizing, cooldowns, stop-losses, confidence thresholds — 
+                the operational discipline that separates professional execution from impulse.
             </p>
         </div>
         """, unsafe_allow_html=True)
     
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # THE FIVE-DAY EXPERIENCE
+    # DEEPER ACCESS - Only for those who want to see
     st.markdown("""
     <div style="text-align: center; margin-bottom: 30px;">
-        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ THE EXPERIENCE</p>
-        <h3 style="color: #00D4FF; font-size: 28px; font-weight: 300; letter-spacing: 3px;">
-            FIVE DAYS. NO COST. FULL ACCESS.
-        </h3>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    col1, col2, col3, col4, col5 = st.columns(5)
-    
-    days = [
-        ("DAY 1", "Instant Access", "$100K virtual cash ready. Begin paper trading immediately."),
-        ("DAY 2", "Continue Free", "Simple registration (name + email) to extend your trial."),
-        ("DAY 3", "Full Immersion", "Explore AI signals, backtests, and automated trading."),
-        ("DAY 4", "Mastery", "Refine your strategy. Compare against benchmark returns."),
-        ("DAY 5", "Decision Point", "Subscribe, upgrade, or part ways — no pressure, no tricks."),
-    ]
-    
-    for i, (day, title, desc) in enumerate(days):
-        with [col1, col2, col3, col4, col5][i]:
-            st.markdown(f"""
-            <div style="background: #0D1117; padding: 20px; border-radius: 8px; 
-                        border-left: 2px solid #00D4FF; min-height: 180px;">
-                <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin: 0;">
-                    {day}
-                </p>
-                <h5 style="color: #E8E8E8; font-size: 14px; font-weight: 400; margin: 10px 0; letter-spacing: 1px;">
-                    {title}
-                </h5>
-                <p style="color: #888; font-size: 12px; line-height: 1.6;">
-                    {desc}
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
-    
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    
-    # NAVIGATION TO OTHER PAGES
-    st.markdown("""
-    <div style="text-align: center; margin-bottom: 30px;">
-        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ EXPLORE</p>
-        <h3 style="color: #00D4FF; font-size: 24px; font-weight: 300; letter-spacing: 2px;">
-            DISCOVER THE PLATFORM
-        </h3>
+        <p style="color: #888; font-size: 11px; letter-spacing: 3px;">▣ FURTHER</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -546,51 +501,51 @@ def render_landing_page():
             st.rerun()
     
     with col2:
-        if st.button("▣ SUBSCRIPTION PLANS", use_container_width=True):
+        if st.button("▣ SUBSCRIPTION TERMS", use_container_width=True):
             st.session_state.requested_page = "Subscribe"
             st.session_state.show_landing = False
             st.rerun()
     
     with col3:
-        if st.button("▣ PRICING & ACCESS", use_container_width=True):
+        if st.button("▣ ACCOUNT & PRICING", use_container_width=True):
             st.session_state.requested_page = "Account"
             st.session_state.show_landing = False
             st.rerun()
     
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # TECH SPECS (smaller text, for the curious)
-    with st.expander("▣ PLATFORM SPECIFICATIONS — Technical Architecture"):
+    # TECHNICAL SPECS - for the technically curious
+    with st.expander("▣ TECHNICAL SPECIFICATIONS"):
         st.markdown("""
         <div style="background: #0D1117; padding: 25px; border-radius: 8px; 
                     border: 1px solid rgba(0,212,255,0.15); font-size: 12px; line-height: 1.8;">
             <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px;">▣ PREDICTION ENGINE</p>
             <ul style="color: #888; margin-top: 10px;">
-                <li><b style="color: #E8E8E8;">Random Forest Classifier</b> — Ensemble of decision trees for non-linear pattern recognition across 17+ market features</li>
-                <li><b style="color: #E8E8E8;">Gradient Boosting</b> — Sequential error-correction model that learns from market history</li>
-                <li><b style="color: #E8E8E8;">Logistic Regression</b> — Probabilistic baseline for confidence calibration</li>
-                <li><b style="color: #E8E8E8;">Consensus Mechanism</b> — Weighted voting across all models; trades only execute on unanimous high-confidence signals</li>
+                <li><b style="color: #E8E8E8;">Random Forest</b> — Pattern recognition across 17+ market features</li>
+                <li><b style="color: #E8E8E8;">Gradient Boosting</b> — Sequential error correction from market history</li>
+                <li><b style="color: #E8E8E8;">Logistic Regression</b> — Probability calibration baseline</li>
+                <li><b style="color: #E8E8E8;">Consensus</b> — Trades only on unanimous high-confidence signals</li>
             </ul>
             
-            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ DATA INFRASTRUCTURE</p>
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ DATA</p>
             <ul style="color: #888; margin-top: 10px;">
-                <li><b style="color: #E8E8E8;">Real-time Market Data</b> — Yahoo Finance API (NYSE, NASDAQ, indices)</li>
-                <li><b style="color: #E8E8E8;">Interactive Visualization</b> — Plotly-powered multi-panel charts (candlestick, RSI, MACD, volume)</li>
-                <li><b style="color: #E8E8E8;">Historical Depth</b> — Up to 5 years of OHLCV data for backtesting</li>
+                <li><b style="color: #E8E8E8;">Real-time</b> — Yahoo Finance API (NYSE, NASDAQ)</li>
+                <li><b style="color: #E8E8E8;">Visualization</b> — Plotly multi-panel charts</li>
+                <li><b style="color: #E8E8E8;">Historical</b> — 5 years OHLCV for backtesting</li>
             </ul>
             
-            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ EXECUTION SAFEGUARDS</p>
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ SAFEGUARDS</p>
             <ul style="color: #888; margin-top: 10px;">
-                <li><b style="color: #E8E8E8;">Minimum Hold Period</b> — Prevents reactive overtrading</li>
-                <li><b style="color: #E8E8E8;">Confidence Thresholds</b> — 75%+ required for buy signals, 65%+ for sells</li>
-                <li><b style="color: #E8E8E8;">Stop-Loss Protection</b> — Configurable per trade</li>
-                <li><b style="color: #E8E8E8;">Cooldown Logic</b> — 4-hour minimum between repeat positions</li>
+                <li><b style="color: #E8E8E8;">Min Hold</b> — 1 hour minimum before exit</li>
+                <li><b style="color: #E8E8E8;">Confidence</b> — 75%+ buy, 65%+ sell</li>
+                <li><b style="color: #E8E8E8;">Stop-Loss</b> — Per-trade configurable</li>
+                <li><b style="color: #E8E8E8;">Cooldown</b> — 4-hour minimum between positions</li>
             </ul>
             
-            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ REGULATORY POSTURE</p>
+            <p style="color: #00D4FF; font-size: 10px; letter-spacing: 2px; margin-top: 20px;">▣ REGULATORY</p>
             <p style="color: #888; margin-top: 10px;">
-                Paper trading is unregulated by definition. Real-money transition includes SEC-compliant 
-                onboarding ($120 / $99 early-adopter), broker integration, and transparent fee structure 
+                Paper trading is unregulated. Real-money transition includes SEC-compliant onboarding 
+                ($120 / $99 early-adopter), broker integration, and transparent fee structure 
                 (10% of bi-weekly gains, no subscription fee).
             </p>
         </div>
@@ -2128,10 +2083,129 @@ def main():
     elif page == "Account":
         render_account_page()
     
+    # AI Chat Assistant (always available)
+    render_ai_chat_widget()
+    
     # Auto-refresh for demo
     if st.sidebar.toggle("🔄 Auto-refresh"):
         time.sleep(5)
         st.rerun()
+
+
+def render_ai_chat_widget():
+    """Floating AI chat assistant"""
+    if 'chat_open' not in st.session_state:
+        st.session_state.chat_open = False
+    if 'chat_history' not in st.session_state:
+        st.session_state.chat_history = []
+    
+    # Chat toggle button (fixed position)
+    st.markdown("""
+    <style>
+    .chat-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #00D4FF, #7B2FFF);
+        border-radius: 50%;
+        box-shadow: 0 4px 20px rgba(0,212,255,0.4);
+        cursor: pointer;
+        z-index: 9998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .chat-panel {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 380px;
+        max-width: calc(100vw - 60px);
+        max-height: 500px;
+        background: #0D1117;
+        border: 1px solid rgba(0,212,255,0.3);
+        border-radius: 12px;
+        z-index: 9999;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Toggle button
+    if st.sidebar.button("▣ ASK AI", key="chat_toggle", use_container_width=True):
+        st.session_state.chat_open = not st.session_state.chat_open
+        st.rerun()
+    
+    # Chat panel (in sidebar instead of floating for simplicity)
+    if st.session_state.chat_open:
+        with st.sidebar.container():
+            st.markdown("""
+            <div style="background: #0D1117; padding: 15px; border-radius: 8px; 
+                        border: 1px solid rgba(0,212,255,0.3); margin-top: 10px;">
+                <p style="color: #00D4FF; font-size: 11px; letter-spacing: 2px; margin: 0 0 10px 0;">
+                    ▣ AI ASSISTANT
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Chat history
+            chat_container = st.container()
+            with chat_container:
+                for msg in st.session_state.chat_history[-10:]:  # Show last 10
+                    if msg['role'] == 'user':
+                        st.markdown(f"""
+                        <div style="background: rgba(0,212,255,0.1); padding: 10px; 
+                                    border-radius: 8px; margin: 5px 0; border-left: 2px solid #00D4FF;">
+                            <p style="color: #888; font-size: 10px; margin: 0 0 5px 0;">YOU</p>
+                            <p style="color: #E8E8E8; font-size: 13px; margin: 0;">{msg['content']}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"""
+                        <div style="background: rgba(0,255,136,0.08); padding: 10px; 
+                                    border-radius: 8px; margin: 5px 0; border-left: 2px solid #00FF88;">
+                            <p style="color: #00FF88; font-size: 10px; margin: 0 0 5px 0;">▣ AI ASSISTANT</p>
+                            <p style="color: #E8E8E8; font-size: 13px; margin: 0; line-height: 1.5;">{msg['content']}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+            
+            # Suggested questions (only if no history)
+            if not st.session_state.chat_history:
+                st.markdown("""
+                <p style="color: #888; font-size: 10px; letter-spacing: 1px; margin: 10px 0 5px 0;">
+                    ▣ SUGGESTED QUESTIONS
+                </p>
+                """, unsafe_allow_html=True)
+                
+                for question in ai_assistant.get_suggested_questions()[:4]:
+                    if st.button(question, key=f"suggest_{question[:20]}", use_container_width=True):
+                        st.session_state.chat_history.append({"role": "user", "content": question})
+                        response = ai_assistant.get_response(question)
+                        st.session_state.chat_history.append({"role": "assistant", "content": response})
+                        st.rerun()
+            
+            # Input
+            user_input = st.text_input("Ask a question", key="chat_input", label_visibility="collapsed", placeholder="Ask about markets, AI, pricing...")
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                if st.button("SEND", key="chat_send", use_container_width=True):
+                    if user_input:
+                        st.session_state.chat_history.append({"role": "user", "content": user_input})
+                        response = ai_assistant.get_response(user_input)
+                        st.session_state.chat_history.append({"role": "assistant", "content": response})
+                        st.rerun()
+            with col2:
+                if st.button("CLEAR", key="chat_clear", use_container_width=True):
+                    st.session_state.chat_history = []
+                    st.rerun()
 
 
 if __name__ == "__main__":
