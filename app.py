@@ -322,7 +322,7 @@ def render_sidebar():
 
 # ==================== LANDING PAGE HELPERS ====================
 def render_market_ticker():
-    """Live-scrolling market ticker bar"""
+    """Static market indices bar - institutional look without animations"""
     try:
         indices = [
             ("^GSPC", "S&P 500"),
@@ -331,33 +331,29 @@ def render_market_ticker():
             ("^RUT", "RUSSELL"),
         ]
         
-        ticker_items = ""
-        for symbol, name in indices:
+        # Use st.columns for a clean, static ticker
+        cols = st.columns(len(indices))
+        
+        for i, (symbol, name) in enumerate(indices):
             quote = trading_engine.get_realtime_quote(symbol)
             if quote:
                 color = "#00FF88" if quote['change_pct'] >= 0 else "#FF4757"
-                ticker_items += f"""
-                <span style="color: #888; margin: 0 20px; font-size: 12px; letter-spacing: 1px;">
-                    {name} <span style="color: {color}; font-weight: 500;">${quote['price']:,.2f}</span>
-                    <span style="color: {color}; font-size: 11px;">({quote['change_pct']:+.2f}%)</span>
-                </span>
-                """
-        
-        st.markdown(f"""
-        <div style="background: #0A0E17; padding: 8px 0; border-bottom: 1px solid rgba(0,212,255,0.1); 
-                    border-top: 1px solid rgba(0,212,255,0.1); margin: 0 -1rem 2rem -1rem; 
-                    overflow: hidden; white-space: nowrap;">
-            <div style="display: inline-block; animation: scroll 30s linear infinite;">
-                {ticker_items} {ticker_items}
-            </div>
-        </div>
-        <style>
-        @keyframes scroll {{
-            0% {{ transform: translateX(0); }}
-            100% {{ transform: translateX(-50%); }}
-        }}
-        </style>
-        """, unsafe_allow_html=True)
+                arrow = "▲" if quote['change_pct'] >= 0 else "▼"
+                with cols[i]:
+                    st.markdown(f"""
+                    <div style="text-align: center; padding: 8px; background: #0A0E17; 
+                                border-left: 1px solid rgba(0,212,255,0.1); border-right: 1px solid rgba(0,212,255,0.1);">
+                        <p style="color: #888; font-size: 10px; letter-spacing: 2px; margin: 0 0 4px 0;">
+                            {name}
+                        </p>
+                        <p style="color: #E8E8E8; font-size: 16px; font-weight: 400; margin: 0; letter-spacing: 1px;">
+                            ${quote['price']:,.2f}
+                        </p>
+                        <p style="color: {color}; font-size: 11px; margin: 4px 0 0 0;">
+                            {arrow} {quote['change_pct']:+.2f}%
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
     except:
         pass
 
